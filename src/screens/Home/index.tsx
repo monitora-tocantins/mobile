@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   ToastAndroid,
-  Alert,
   Image,
   TouchableOpacity,
 } from 'react-native';
@@ -22,8 +20,7 @@ import TitleApp from '../../components/TitleApp';
 import CorongaSvg from '../../assets/coronavirus.svg';
 import { preventions, symptoms } from '../../data';
 import axios from 'axios';
-import { Avatar, Button, useTheme } from 'react-native-paper';
-import { useAuth } from '../../hooks/useAuth';
+import { Avatar, useTheme } from 'react-native-paper';
 import { AppScreensProps } from '../../routes/app.routes';
 
 type CovidCases = {
@@ -35,7 +32,6 @@ type CovidCases = {
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
   const [covidError, setCovidError] = useState('');
   const [covidCases, setCovidCases] = useState<CovidCases>({
     updatedDate: '',
@@ -48,10 +44,6 @@ const Home: React.FC = () => {
   const theme = useTheme();
 
   const mounted = useRef(true);
-
-  function handleNavigationForm() {
-    navigation.navigate('Form');
-  }
 
   const handleGetCovidCases = async () => {
     setLoading(true);
@@ -100,7 +92,6 @@ const Home: React.FC = () => {
           'Permissão ao acesso a localização negado',
           ToastAndroid.LONG,
         );
-        console.log('Permissão ao acesso a localização concedido');
       }
     };
 
