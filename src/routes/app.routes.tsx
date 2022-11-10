@@ -3,12 +3,14 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from '@react-navigation/stack';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from 'react-native-paper';
 import { Loadable } from '../layout/Loadable';
 import { StyleSheet } from 'react-native';
 
-// const Home = Loadable(lazy(() => import('../screens/Home')));
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+const Home = Loadable(lazy(() => import('../screens/Home')));
+const About = Loadable(lazy(() => import('../screens/Profile')));
 const Dashboard = Loadable(lazy(() => import('../screens/Dashboard')));
 const Form = Loadable(lazy(() => import('../screens/Form')));
 
@@ -17,26 +19,41 @@ const StackNavigator = createStackNavigator();
 type RootStackParamList = {
   dashboard: undefined;
   form: undefined;
+  about: undefined;
 };
 
-export type AppScreensProps = StackNavigationProp<
-  RootStackParamList,
-  'dashboard',
-  'form'
->;
+export type AppScreensProps = StackNavigationProp<RootStackParamList>;
 
 const AppRoutes: React.FC = () => {
   const { colors } = useTheme();
 
   return (
     <StackNavigator.Navigator>
-      {/* <StackNavigator.Screen
+      <StackNavigator.Screen
         name="home"
         component={Home}
         options={{
           headerShown: false,
         }}
-      /> */}
+      />
+      <StackNavigator.Screen
+        name="about"
+        component={About}
+        options={{
+          headerTitle: 'Perfil',
+          headerShadowVisible: false,
+          headerTitleAlign: 'center',
+          headerLeft: ({ ...props }) => (
+            <MaterialIcons
+              {...props}
+              name="close"
+              size={32}
+              color={colors.onPrimaryContainer}
+              style={styles.icon}
+            />
+          ),
+        }}
+      />
       <StackNavigator.Screen
         name="dashboard"
         component={Dashboard}
