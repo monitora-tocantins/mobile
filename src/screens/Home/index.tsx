@@ -6,6 +6,7 @@ import {
   ToastAndroid,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,14 +15,15 @@ import { hasLocationPermission } from '../../libs';
 
 import CardInfor from './components/CardInfor';
 import CardQuestions from './components/CardQuestions';
-import ListInfo from './components/ListInfo';
-import TitleApp from '../../components/TitleApp';
-
-import CorongaSvg from '../../assets/coronavirus.svg';
-import { preventions, symptoms } from '../../data';
+// import ListInfo from './components/ListInfo';
+// import TitleApp from '../../components/TitleApp';
+// import { preventions, symptoms } from '../../data';
 import axios from 'axios';
-import { Avatar, useTheme } from 'react-native-paper';
+import { Avatar, Text, useTheme } from 'react-native-paper';
 import { AppScreensProps } from '../../routes/app.routes';
+import { UserType } from '../../utils/constant';
+import { useAuth } from '../../hooks/useAuth';
+import { stringToColor } from '../../utils/mask';
 
 type CovidCases = {
   updatedDate: string;
@@ -42,8 +44,8 @@ const Home: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
 
   const theme = useTheme();
-
   const mounted = useRef(true);
+  const { user } = useAuth();
 
   const handleGetCovidCases = async () => {
     setLoading(true);
@@ -105,26 +107,46 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: theme.colors.background },
+        ]}>
         <FocusAwareStatusBar
           barStyle="dark-content"
           backgroundColor={theme.colors.background}
         />
         <ScrollView overScrollMode="never" showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <View style={styles.wrapperLogo}>
-              <Image
-                source={require('../../assets/logo-transp.png')}
-                style={styles.logo}
-                resizeMode="contain"
+            <Image
+              source={require('../../assets/logo-transp.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text
+              variant="titleMedium"
+              style={{ color: theme.colors.onPrimaryContainer }}>
+              Monitora Tocantins
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('about');
+              }}>
+              <Avatar.Text
+                size={46}
+                label={`${
+                  user.name
+                    .replace(/\s(de|da|dos|das)\s/g, ' ')
+                    .split(' ')[0][0]
+                }`}
+                style={{
+                  backgroundColor: stringToColor(user.name),
+                }}
               />
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('about');
-                }}>
-                <Avatar.Text size={66} label="XD" />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.content}>
             <CardInfor
               updatedDate={covidCases.updatedDate}
               death={covidCases.death}
@@ -134,21 +156,16 @@ const Home: React.FC = () => {
               error={covidError}
               onRefresh={() => handleRefresh()}
             />
-
-            {/* {user.type === 1 ? (
+            {user.type === UserType.CENSUS_TAKER ? (
               <CardQuestions
                 title="Censo 2022"
                 description="Aplique o questionário referente ao coronavírus na região"
-                Icon={CorongaSvg}
-                backgroundColor={theme.colors.primary}
-                onPress={handleNavigationForm}
+                onPress={() => navigation.navigate('dashboard')}
               />
             ) : (
               <CardQuestions
                 title="Censo 2022"
                 description="Responda o questionário referente ao coronavírus"
-                Icon={CorongaSvg}
-                backgroundColor={theme.colors.primary}
                 onPress={() =>
                   Alert.alert(
                     'CENSO 2022',
@@ -156,9 +173,10 @@ const Home: React.FC = () => {
                   )
                 }
               />
-            )} */}
+            )}
+          </View>
 
-            {/* <CardQuestions
+          {/* <CardQuestions
               title="Formulário sobre a vacina"
               description="Contém uma lista de várias perguntas para verificar sua condição física"
               Icon={VacinaSvg}
@@ -166,7 +184,6 @@ const Home: React.FC = () => {
               backgroundColor="#5BC4FF"
               onPress={handleNavigationVaccineForm}
             /> */}
-          </View>
 
           {/* <View>
             <Text style={styles.titleList}>Como se prevenir?</Text>
@@ -189,15 +206,15 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-  },
-  wrapperLogo: {
-    width: '100%',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 48,
-    marginTop: 30,
-    marginBottom: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  content: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   wrapperTitle: {
     flexDirection: 'row',
@@ -206,8 +223,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   logo: {
-    width: 75,
-    height: 75,
+    width: 50,
+    height: 50,
   },
   titleArea: {
     flexDirection: 'row',

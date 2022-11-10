@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { heightPercentToDP, widthPercentToDP } from '../../libs';
@@ -32,7 +32,11 @@ const CardCase: React.FC<CardCaseProps> = ({
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: theme.colors.background },
+        ]}>
         <View style={styles.iconLoad} />
         <View style={styles.numberLoad} />
         <View style={styles.captionLoad} />
@@ -41,7 +45,8 @@ const CardCase: React.FC<CardCaseProps> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       {hasIcon && (
         <Ionicons
           name={
@@ -72,7 +77,11 @@ const CardCase: React.FC<CardCaseProps> = ({
         ]}>
         {formatCurrency(caseNumber)}
       </Text>
-      <Text style={styles.caption}>{title}</Text>
+      <Text
+        variant="titleMedium"
+        style={{ color: theme.colors.onPrimaryContainer }}>
+        {title}
+      </Text>
     </View>
   );
 };
@@ -88,26 +97,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     borderRadius: 5,
-
-    // shadowColor: theme.colors.black,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 5,
-    elevation: 1,
   },
   title: {
     textAlign: 'center',
-    // fontSize: 24,
     fontSize: widthPercentToDP('5%'),
   },
   caption: {
-    // fontSize: 12,
     fontSize: widthPercentToDP('3%'),
   },
-  // Effect load
   iconLoad: {
     width: 20,
     height: 20,

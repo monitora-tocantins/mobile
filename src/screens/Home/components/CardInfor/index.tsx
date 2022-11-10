@@ -1,13 +1,12 @@
 import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Text, useTheme } from 'react-native-paper';
 
-import { widthPercentToDP } from '../../../../libs';
 import CardCase from '../../../../components/CardCase';
-import { format } from 'date-fns';
+import { widthPercentToDP } from '../../../../libs';
 import pt from 'date-fns/locale/pt-BR';
-import { useTheme } from 'react-native-paper';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
+import { format } from 'date-fns';
 
 type Props = {
   updatedDate: string;
@@ -35,18 +34,27 @@ const CardInfor: React.FC<Props> = ({
   const theme = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.elevation.level1 },
+      ]}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Covid-19 em Cametá</Text>
+          <Text
+            variant="titleLarge"
+            style={[styles.title, { color: theme.colors.onPrimaryContainer }]}>
+            Covid-19 em Cametá
+          </Text>
           {loading ? (
             <View style={styles.dateUpdateCaseLoad} />
           ) : (
-            <Text style={styles.caption}>
-              {`Atualizado em ${format(updateDate, "dd 'de' MMMM 'de' yyyy", {
-                locale: pt,
-              })}`}
-              {console.log(format(updateDate, 'dd MMMM yyyy'))}
+            <Text variant="titleMedium" style={{ color: theme.colors.outline }}>
+              <>
+                {`Atualizado em ${format(updateDate, "dd 'de' MMMM 'de' yyyy", {
+                  locale: pt,
+                })}`}
+              </>
             </Text>
           )}
         </View>
@@ -87,7 +95,7 @@ export default CardInfor;
 
 const styles = StyleSheet.create({
   container: {
-    width: widthPercentToDP('90%'),
+    width: '100%',
     padding: 15,
     borderRadius: 10,
   },
@@ -98,11 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    // fontSize: 16,
-    fontSize: widthPercentToDP('4.8%'),
-  },
-  caption: {
-    fontSize: widthPercentToDP('3.3%'),
+    fontWeight: '800',
   },
   wrapperCardCase: {
     width: '100%',

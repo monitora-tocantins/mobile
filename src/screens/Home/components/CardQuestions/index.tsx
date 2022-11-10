@@ -1,64 +1,56 @@
 import React from 'react';
-import { View, Text, StyleSheet, ColorValue } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { SvgProps } from 'react-native-svg';
-
-import { heightPercentToDP, widthPercentToDP } from '../../../../libs';
+import { heightPercentToDP } from '../../../../libs';
 
 import CorongaSvg from '../../../../assets/coronavirus.svg';
-import { Button } from 'react-native-paper';
+import { Text, TouchableRipple } from 'react-native-paper';
 import { theme } from '../../../../theme';
 
 type Props = {
   title: string;
   description: string;
   disable?: boolean;
-  backgroundColor: ColorValue;
-  Icon: React.FC<SvgProps>;
   onPress: () => void;
 };
 
 const CardQuestions: React.FC<Props> = ({
   title,
   description,
-  backgroundColor,
-  Icon,
   disable = false,
   onPress,
 }) => {
   return (
-    <Button
+    <TouchableRipple
       disabled={disable}
       style={[
         styles.container,
         {
-          backgroundColor: backgroundColor
-            ? backgroundColor
-            : theme.colors.primary,
+          backgroundColor: theme.colors.primary,
         },
       ]}
       onPress={onPress}>
-      {Icon ? (
-        <Icon style={styles.imgCoronga} />
-      ) : (
+      <>
         <CorongaSvg style={styles.imgCoronga} />
-      )}
-      <View style={styles.wrapperText}>
-        <Text style={styles.title}>
-          {title ? title : 'Auto verificação Covid-19'}
-        </Text>
-        <Text style={styles.caption}>
-          {description
-            ? description
-            : 'Contém uma lista de várias perguntas para verificar sua condição física'}
-        </Text>
-      </View>
-      <SimpleLineIcons
-        name="arrow-right"
-        size={25}
-        color={theme.colors.onPrimary}
-      />
-    </Button>
+        <View style={styles.wrapperText}>
+          <Text
+            variant="titleLarge"
+            style={[styles.title, { color: theme.colors.onPrimary }]}>
+            {title ? title : 'IoT Imuniza - 2022'}
+          </Text>
+          <Text
+            variant="bodyLarge"
+            style={[styles.caption, { color: theme.colors.onPrimary }]}>
+            {description ? description : 'Aplique o questionário na sua região'}
+          </Text>
+        </View>
+        <SimpleLineIcons
+          name="arrow-right"
+          size={25}
+          color={theme.colors.onPrimary}
+        />
+      </>
+    </TouchableRipple>
   );
 };
 
@@ -66,20 +58,17 @@ export default CardQuestions;
 
 const styles = StyleSheet.create({
   container: {
-    width: widthPercentToDP('90%'),
+    width: '100%',
     height: heightPercentToDP('18%'), // equivale a 105
-    // maxHeight: 130,
     maxHeight: 160,
-    // backgroundColor: theme.colors.primary,
     padding: 20,
     borderRadius: 10,
     marginTop: 20,
     marginBottom: 30,
-    overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-
+    position: 'relative',
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowOffset: {
@@ -101,14 +90,10 @@ const styles = StyleSheet.create({
     width: '75%',
   },
   title: {
-    fontSize: widthPercentToDP('4.4%'),
-    // marginBottom: 10,
     marginBottom: 5,
+    fontWeight: '800',
   },
   caption: {
-    fontSize: widthPercentToDP('3.2%'),
-    //lineHeight: 20,
     height: '60%',
-    // width: '70%',
   },
 });
