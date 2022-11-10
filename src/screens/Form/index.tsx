@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { Keyboard, StatusBar, StyleSheet, View } from 'react-native';
-import { Button, ProgressBar, Text, useTheme } from 'react-native-paper';
-import { validateCpf, validateEmail } from '../../utils/mask';
+import React, { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { Alert, Keyboard, StatusBar, StyleSheet, View } from 'react-native';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { FormIdentification } from './components/FormIdentification';
+import { validateCpf, validateEmail } from '../../utils/mask';
+import { AppScreensProps } from '../../routes/app.routes';
 
 const Form: React.FC = () => {
   const theme = useTheme();
+  const [isFinish, setIsFinish] = useState(false);
+  const [isStated, setIsStarted] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
@@ -19,6 +23,8 @@ const Form: React.FC = () => {
   const [cpfError, setCpfError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
+
+  const navigation = useNavigation<AppScreensProps>();
 
   const validadeFormIdentification = () => {
     Keyboard.dismiss();
@@ -459,6 +465,41 @@ const Form: React.FC = () => {
     //   ),
     // },
   ];
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (isFinish) {
+          return;
+        }
+
+        if (!isStated) {
+          // If we don't have unsaved changes, then we don't need to do anything
+          return;
+        }
+
+        if (!isFinish) {
+          // Prevent default behavior of leaving the screen
+          e.preventDefault();
+          // Prompt the user before leaving the screen
+          Alert.alert(
+            'Descartar formulário?',
+            'Se você voltar, os dados preenchidos serão perdidos. Deseja cancelar?',
+            [
+              { text: 'Não', style: 'cancel', onPress: () => {} },
+              {
+                text: 'Sim',
+                style: 'destructive',
+                // If the user confirmed, then we dispatch the action we blocked earlier
+                // This will continue the action that had triggered the removal of the screen
+                onPress: () => navigation.dispatch(e.data.action),
+              },
+            ],
+          );
+        }
+      }),
+    [navigation, isStated, isFinish],
+  );
 
   return (
     <View

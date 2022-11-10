@@ -1,23 +1,25 @@
 import React, { lazy } from 'react';
 import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack';
-import { Loadable } from '../layout/Loadable';
+  createStackNavigator,
+  StackNavigationProp,
+} from '@react-navigation/stack';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from 'react-native-paper';
+import { Loadable } from '../layout/Loadable';
+import { StyleSheet } from 'react-native';
 
 // const Home = Loadable(lazy(() => import('../screens/Home')));
 const Dashboard = Loadable(lazy(() => import('../screens/Dashboard')));
 const Form = Loadable(lazy(() => import('../screens/Form')));
 
-const StackNavigator = createNativeStackNavigator();
+const StackNavigator = createStackNavigator();
 
 type RootStackParamList = {
   dashboard: undefined;
   form: undefined;
 };
 
-export type AppScreensProps = NativeStackNavigationProp<
+export type AppScreensProps = StackNavigationProp<
   RootStackParamList,
   'dashboard',
   'form'
@@ -57,6 +59,15 @@ const AppRoutes: React.FC = () => {
           headerShadowVisible: false,
           headerTitleAlign: 'center',
           headerTitle: 'IoT Imuniza - Censo 2022',
+          headerLeft: ({ ...props }) => (
+            <MaterialIcons
+              {...props}
+              color={colors.onPrimaryContainer}
+              name="close"
+              size={24}
+              style={styles.icon}
+            />
+          ),
         }}
       />
     </StackNavigator.Navigator>
@@ -64,3 +75,9 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
+const styles = StyleSheet.create({
+  icon: {
+    marginLeft: 16,
+  },
+});
