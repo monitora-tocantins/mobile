@@ -6,8 +6,6 @@ import { theme } from './theme';
 import { Routes } from './routes';
 import FlashMessage from 'react-native-flash-message';
 
-export type ThemeOverride = typeof theme;
-
 export const App: React.FC = () => {
   return (
     <NavigationContainer>

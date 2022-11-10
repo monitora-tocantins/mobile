@@ -170,6 +170,7 @@ const Login: React.FC = () => {
             <Button
               contentStyle={styles.button}
               mode="contained"
+              buttonColor={colors.primary}
               loading={loading}
               disabled={loading}
               onPress={() => handleSubmit()}>

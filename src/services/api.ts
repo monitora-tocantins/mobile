@@ -4,7 +4,7 @@ import axios from 'axios';
 // const baseURL = 'https://apimonitora.herokuapp.com';
 
 // DEVELOPTMENT
-const baseURL = 'http://192.168.10.105:3333/api';
+const baseURL = 'http://192.168.10.4:8001/api';
 
 export const api = axios.create({
   baseURL: baseURL,
