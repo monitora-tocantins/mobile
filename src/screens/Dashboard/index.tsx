@@ -1,28 +1,39 @@
 import React, { useState } from 'react';
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
-import { Chip, FAB, Portal, Text, useTheme } from 'react-native-paper';
+import { FAB, ProgressBar, Text, useTheme } from 'react-native-paper';
 import { useAuth } from '../../hooks/useAuth';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import LogoImg from '../../assets/icon.png';
+import { FilterCensusForm } from '../../components/FilterCensusForm';
+import { CensusFormCard } from '../../components/CensusFormCard';
+import { useFormStorage } from '../../contexts/FormStorage';
+import { ptBR } from 'date-fns/locale';
+import { format } from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
+import { AppScreensProps } from '../../routes/app.routes';
 
 const Dashboard: React.FC = () => {
   const { colors } = useTheme();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const { storage, loading } = useFormStorage();
+  const navigation = useNavigation<AppScreensProps>();
 
   const onStateChange = (value: boolean) => setIsOpen(value);
 
   const onSelectedFilter = (value: string) => setSelectedFilter(value);
+
+  const filtered =
+    selectedFilter === 'all'
+      ? storage
+      : storage.filtered('status == $0', selectedFilter);
 
   return (
     <>
@@ -30,20 +41,14 @@ const Dashboard: React.FC = () => {
       <SafeAreaView
         style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.content}>
-          <Image source={LogoImg} style={styles.logo} resizeMode="contain" />
           <View style={styles.header}>
             <Text
               variant="titleLarge"
-              style={[
-                styles.headerTitle,
-                { color: colors.onPrimaryContainer },
-              ]}>
-              Monitora Tocantins
+              style={[{ color: colors.onPrimaryContainer }]}>
+              Olá,
             </Text>
-            <Text
-              variant="titleMedium"
-              style={[styles.headerSubtitle, { color: colors.secondary }]}>
-              Bem vindo, {user.name}
+            <Text variant="titleMedium" style={[{ color: colors.secondary }]}>
+              {user.name}
             </Text>
           </View>
           <View style={styles.areaList}>
@@ -52,70 +57,31 @@ const Dashboard: React.FC = () => {
               contentContainerStyle={styles.horizontalList}
               showsHorizontalScrollIndicator={false}>
               <View style={styles.filterItem}>
-                <Text
-                  variant="titleSmall"
-                  style={[
-                    styles.headerTitle,
-                    styles.filterTitle,
-                    { color: colors.onPrimaryContainer },
-                  ]}>
-                  Total
-                </Text>
-                <Chip
-                  icon="inbox"
+                <FilterCensusForm
+                  label="Todos"
+                  quantity={0}
                   onPress={() => onSelectedFilter('all')}
-                  selected={selectedFilter === 'all' && true}
-                  mode={selectedFilter === 'all' ? 'flat' : 'outlined'}>
-                  10
-                </Chip>
+                  selected={selectedFilter === 'all'}
+                  type="all"
+                />
               </View>
               <View style={styles.filterItem}>
-                <Text
-                  variant="titleSmall"
-                  style={[
-                    styles.headerTitle,
-                    styles.filterTitle,
-                    { color: colors.onPrimaryContainer },
-                  ]}>
-                  Pendentes
-                </Text>
-                <Chip
-                  icon={() => (
-                    <MaterialIcons
-                      name="pending-actions"
-                      color="#FF8E4F"
-                      size={18}
-                    />
-                  )}
+                <FilterCensusForm
+                  label="Completo"
+                  quantity={0}
+                  onPress={() => onSelectedFilter('complete')}
+                  selected={selectedFilter === 'complete'}
+                  type="complete"
+                />
+              </View>
+              <View style={styles.filterItem}>
+                <FilterCensusForm
+                  label="Pendentes"
+                  quantity={0}
                   onPress={() => onSelectedFilter('pending')}
-                  selected={selectedFilter === 'pending' && true}
-                  mode={selectedFilter === 'pending' ? 'flat' : 'outlined'}>
-                  10
-                </Chip>
-              </View>
-              <View style={styles.filterItem}>
-                <Text
-                  variant="titleSmall"
-                  style={[
-                    styles.headerTitle,
-                    styles.filterTitle,
-                    { color: colors.onPrimaryContainer },
-                  ]}>
-                  Completos
-                </Text>
-                <Chip
-                  icon={() => (
-                    <MaterialIcons
-                      name="cloud-done"
-                      color="#00D488"
-                      size={18}
-                    />
-                  )}
-                  selected={selectedFilter === 'complete' && true}
-                  mode={selectedFilter === 'complete' ? 'flat' : 'outlined'}
-                  onPress={() => onSelectedFilter('complete')}>
-                  10
-                </Chip>
+                  selected={selectedFilter === 'pending'}
+                  type="pending"
+                />
               </View>
             </ScrollView>
           </View>
@@ -123,51 +89,72 @@ const Dashboard: React.FC = () => {
 
         <ScrollView>
           <View style={styles.verticalList}>
-            {/* <CensusFormCard date="testes" title="Testes" type="complete" /> */}
+            {loading ? (
+              <>
+                <ProgressBar indeterminate />
+                <Text variant="bodyLarge" style={styles.loaderTitle}>
+                  Carregando formulários
+                </Text>
+              </>
+            ) : (
+              filtered.map(item => (
+                <CensusFormCard
+                  date={format(item.created_at, "dd 'de' MMM 'de' y", {
+                    locale: ptBR,
+                  })}
+                  title={item.name}
+                  type={item.status}
+                  key={item._id}
+                />
+              ))
+            )}
+            {filtered.length === 0 && (
+              <Text style={styles.loaderTitle} variant="bodyLarge">
+                Nenhum formulário cadastrado
+              </Text>
+            )}
           </View>
         </ScrollView>
 
-        <Portal>
-          <FAB.Group
-            open={isOpen}
-            icon={() =>
-              isOpen ? (
-                <MaterialCommunityIcons
-                  name="file-settings"
-                  size={24}
-                  color={colors.onPrimaryContainer}
-                />
-              ) : (
-                <MaterialCommunityIcons
-                  name="file-settings-outline"
-                  size={24}
-                  color={colors.onPrimaryContainer}
-                />
-              )
+        <FAB.Group
+          open={isOpen}
+          icon={() =>
+            isOpen ? (
+              <MaterialCommunityIcons
+                name="file-settings"
+                size={24}
+                color={colors.onPrimaryContainer}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="file-settings-outline"
+                size={24}
+                color={colors.onPrimaryContainer}
+              />
+            )
+          }
+          visible
+          actions={[
+            {
+              icon: 'plus',
+              label: 'Novo formulário',
+              size: 'medium',
+              onPress: () => navigation.navigate('form'),
+            },
+            {
+              icon: 'sync',
+              label: 'Sincronizar formulários',
+              size: 'medium',
+              onPress: () => console.log('Pressed star'),
+            },
+          ]}
+          onStateChange={({ open }) => onStateChange(open)}
+          onPress={() => {
+            if (isOpen) {
+              // do something if the speed dial is open
             }
-            visible
-            actions={[
-              {
-                icon: 'plus',
-                label: 'Novo formulário',
-                size: 'medium',
-                onPress: () => console.log('Pressed add'),
-              },
-              {
-                icon: 'sync',
-                label: 'Sincronizar formulários',
-                size: 'medium',
-                onPress: () => console.log('Pressed star'),
-              },
-            ]}
-            onStateChange={({ open }) => onStateChange(open)}
-            onPress={() => {
-              if (isOpen) {
-                // do something if the speed dial is open
-              }
-            }}
-          />
-        </Portal>
+          }}
+        />
       </SafeAreaView>
     </>
   );
@@ -188,25 +175,20 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    marginTop: 16,
     marginBottom: 32,
-  },
-  headerTitle: {
-    fontFamily: 'Raleway-Bold',
-    // fontSize: 20,
   },
   filterTitle: {
     textAlign: 'center',
     marginBottom: 4,
   },
-  headerSubtitle: {
-    fontFamily: 'Raleway-Regular',
+  loaderTitle: {
+    textAlign: 'center',
+    marginTop: 8,
   },
   filterItem: { marginRight: 16 },
   horizontalList: {
     justifyContent: 'center',
     alignItems: 'center',
-    // paddingBottom: 24,
     paddingRight: 36,
   },
   verticalList: {

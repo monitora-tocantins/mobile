@@ -12,6 +12,8 @@ export const CensusFormCard: React.FC<Props> = ({ type, date, title }) => {
   const { colors } = useTheme();
   return (
     <Card
+      // mode="elevated"
+      elevation={1}
       onPress={() => {}}
       style={[styles.container, { backgroundColor: colors.background }]}>
       <View
@@ -70,11 +72,10 @@ export const CensusFormCard: React.FC<Props> = ({ type, date, title }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
+    // position: 'relative',
     width: '100%',
-    display: 'flex',
-
-    borderRadius: 10,
+    // display: 'flex',
+    borderRadius: 8,
     overflow: 'hidden',
     marginBottom: 20,
   },
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     height: '100%',
-    width: 8,
+    width: 4,
   },
   title: {
     fontFamily: 'Raleway-Bold',

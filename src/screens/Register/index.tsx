@@ -18,12 +18,13 @@ import {
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
-import LogoImg from '../../assets/logo.png';
+import LogoImg from '../../assets/icon.png';
 import { maskCpf, validateCpf, validateEmail } from '../../utils/mask';
 import Select from '../../components/Select';
 import { api } from '../../services/api';
 import { authScreensProp } from '../../routes/auth.routes';
 import { showMessage } from 'react-native-flash-message';
+import { theme } from '../../theme';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
@@ -118,7 +119,7 @@ const Register: React.FC = () => {
           ]}>
           <View
             style={[styles.container, { backgroundColor: colors.background }]}>
-            <Image source={LogoImg} />
+            <Image source={LogoImg} style={styles.logo} resizeMode="contain" />
             <View style={styles.header}>
               <Text
                 variant="titleLarge"
@@ -195,7 +196,7 @@ const Register: React.FC = () => {
                   </View>
                   <View style={styles.inputWrapper}>
                     <Select
-                      theme={colors}
+                      theme={theme}
                       label="Sexo"
                       mode="outlined"
                       placeholder="Selecione seu sexo"
@@ -319,4 +320,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   button: { height: 46 },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
 });
