@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   ToastAndroid,
-  Alert,
   Image,
   TouchableOpacity,
 } from 'react-native';
@@ -129,7 +127,7 @@ const Home: React.FC = () => {
               />
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('about');
+                  navigation.navigate('profile');
                 }}>
                 <Avatar.Text size={66} label="XD" />
               </TouchableOpacity>
