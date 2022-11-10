@@ -1,17 +1,16 @@
 import React from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { widthPercentToDP } from '../../libs';
-import { Avatar, Text, useTheme } from 'react-native-paper';
+import { heightPercentToDP, widthPercentToDP } from '../../libs';
+import { Text, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AppScreensProps } from '../../routes/app.routes';
-import { MaterialIcons } from 'react-native-vector-icons/MaterialIcons';
+import UserPerfil from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import UserAdd from 'react-native-vector-icons/Ionicons';
 
 const About: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
@@ -22,7 +21,7 @@ const About: React.FC = () => {
         <View style={styles.header}>
           <View style={styles.wrapperLogo}>
             <View style={styles.wrapperPerfil}>
-              <Avatar.Text size={66} label="XD" />
+              <UserPerfil name="user-circle" size={56} />
               <View style={styles.wrapperName}>
                 <Text style={styles.name}>Ilanildo Viana</Text>
                 <Text style={[styles.email, { color: theme.colors.secondary }]}>
@@ -34,48 +33,62 @@ const About: React.FC = () => {
         </View>
         <View style={styles.wrapperData}>
           <View style={styles.wrapperCard}>
-            <Text>Conta</Text>
-            <View>
+            <Text style={styles.titleCard}>Conta</Text>
+            <View style={styles.wrapperButto}>
+              <Ionicons name="person-outline" size={heightPercentToDP('4%')} />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('home');
                 }}>
-                <Text>Dados pessoais</Text>
+                <Text style={styles.titleButto}>Dados pessoais</Text>
               </TouchableOpacity>
             </View>
-            <View>
+            <View style={styles.wrapperButto}>
+              <Feather name="map-pin" size={heightPercentToDP('4%')} />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('home');
                 }}>
-                <Text>Endereço</Text>
+                <Text style={styles.titleButto}>Endereço</Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.wrapperCard}>
-            <Text>Geral</Text>
-            <View>
+            <Text style={styles.titleCard}>Geral</Text>
+            <View style={styles.wrapperButto}>
+              <MaterialIcons
+                name="contact-support"
+                size={heightPercentToDP('4%')}
+              />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('home');
                 }}>
-                <Text>Suporte</Text>
+                <Text style={styles.titleButto}>Suporte</Text>
               </TouchableOpacity>
             </View>
-            <View>
+            <View style={styles.wrapperButto}>
+              <MaterialCommunityIcons
+                name="clipboard-text-outline"
+                size={heightPercentToDP('4%')}
+              />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('home');
                 }}>
-                <Text>Sobre</Text>
+                <Text style={styles.titleButto}>Sobre</Text>
               </TouchableOpacity>
             </View>
-            <View>
+            <View style={styles.wrapperButto}>
+              <UserAdd
+                name="person-add-outline"
+                size={heightPercentToDP('4%')}
+              />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('home');
                 }}>
-                <Text>Convidar amigos</Text>
+                <Text style={styles.titleButto}>Convidar amigos</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -94,12 +107,12 @@ const styles = StyleSheet.create({
   },
   wrapperLogo: {
     width: '100%',
-    paddingHorizontal: 16,
-    marginTop: 30,
-    marginBottom: 5,
+    paddingHorizontal: 24,
+    marginTop: '5%',
+    marginBottom: '1%',
   },
   wrapperPerfil: {
-    width: '50%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -114,11 +127,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   wrapperData: {
-    paddingHorizontal: 16,
-    backgroundColor: '#91b8dd',
+    paddingHorizontal: 24,
   },
   wrapperCard: {
-    marginTop: 30,
+    marginTop: '5%',
+  },
+
+  wrapperButto: {
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '6%',
+  },
+  titleCard: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  titleButto: {
+    fontSize: 20,
+    marginLeft: 32,
+    fontWeight: 'bold',
   },
 
   titleArea: {

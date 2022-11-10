@@ -6,8 +6,10 @@ import {
 import { Loadable } from '../layout/Loadable';
 import { useTheme } from 'react-native-paper';
 
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 const Home = Loadable(lazy(() => import('../screens/Home')));
-const About = Loadable(lazy(() => import('../screens/About')));
+const About = Loadable(lazy(() => import('../screens/Profile')));
 const Dashboard = Loadable(lazy(() => import('../screens/Dashboard')));
 
 const StackNavigator = createNativeStackNavigator();
@@ -35,7 +37,18 @@ const AppRoutes: React.FC = () => {
         name="about"
         component={About}
         options={{
-          headerShown: false,
+          headerTitle: 'Perfil',
+          headerShadowVisible: false,
+          headerTitleAlign: 'center',
+          headerLeft: ({ ...props }) => (
+            <MaterialIcons
+              name="close"
+              {...props}
+              size={32}
+              color={'#000000'}
+              style={{ marginLeft: 24 }}
+            />
+          ),
         }}
       />
       <StackNavigator.Screen
