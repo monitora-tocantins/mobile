@@ -12,8 +12,7 @@ import { useAuth } from '../../hooks/useAuth';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import LogoImg from '../../assets/logo.png';
-import { CensusFormCard } from '../../components/CensusFormCard';
+import LogoImg from '../../assets/icon.png';
 
 const Dashboard: React.FC = () => {
   const { colors } = useTheme();
@@ -31,7 +30,7 @@ const Dashboard: React.FC = () => {
       <SafeAreaView
         style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.content}>
-          <Image source={LogoImg} />
+          <Image source={LogoImg} style={styles.logo} resizeMode="contain" />
           <View style={styles.header}>
             <Text
               variant="titleLarge"
@@ -124,7 +123,7 @@ const Dashboard: React.FC = () => {
 
         <ScrollView>
           <View style={styles.verticalList}>
-            <CensusFormCard date="testes" title="Testes" type="complete" />
+            {/* <CensusFormCard date="testes" title="Testes" type="complete" /> */}
           </View>
         </ScrollView>
 
@@ -218,5 +217,10 @@ const styles = StyleSheet.create({
   },
   areaList: {
     width: '100%',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
   },
 });

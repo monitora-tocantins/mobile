@@ -102,7 +102,7 @@ const Login: React.FC = () => {
     <>
       <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Image source={LogoImg} />
+        <Image source={LogoImg} style={styles.logo} resizeMode="contain" />
         <View style={styles.header}>
           <Text
             variant="titleLarge"
@@ -155,7 +155,7 @@ const Login: React.FC = () => {
                   error={!!passwordError}
                   right={
                     <TextInput.Icon
-                      name={!passwordVisible ? 'eye' : 'eye-off'}
+                      icon={!passwordVisible ? 'eye' : 'eye-off'}
                       onPress={() => setPasswordVisible(!passwordVisible)}
                     />
                   }
@@ -232,4 +232,9 @@ const styles = StyleSheet.create({
   },
   button: { height: 46 },
   registerButton: { marginTop: 16 },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
 });

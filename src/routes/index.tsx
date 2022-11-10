@@ -5,7 +5,7 @@ import Loader from '../layout/Loader';
 import AppRoutes from './app.routes';
 import AuthRoutes from './auth.routes';
 
-const Routes: React.FC = () => {
+export const Routes: React.FC = () => {
   const { isAuthenticated, mounted } = useAuth();
 
   useEffect(() => {
@@ -20,5 +20,3 @@ const Routes: React.FC = () => {
     return isAuthenticated ? <AppRoutes /> : <AuthRoutes />;
   }
 };
-
-export default Routes;

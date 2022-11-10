@@ -50,9 +50,11 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const loadStorage = async () => {
     // await AsyncStorage.clear();
     const dataStorage = await AsyncStorage.getItem(
-      '@monitora_cameta:accessToken',
+      '@monitora_tocantins:access_token',
     );
-    const dataStorageUser = await AsyncStorage.getItem('@monitora_cameta:user');
+    const dataStorageUser = await AsyncStorage.getItem(
+      '@monitora_tocantins:user',
+    );
     if (dataStorage && dataStorageUser) {
       setUser(JSON.parse(dataStorageUser));
       setIsAuthenticated(true);
@@ -66,7 +68,7 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('@monitora_cameta:accessToken');
+      await AsyncStorage.removeItem('@monitora_tocantins:access_token');
       console.log('Apagar os formulários');
       setIsAuthenticated(false);
     } catch (error) {
@@ -88,11 +90,11 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
           password,
         });
         await AsyncStorage.setItem(
-          '@monitora_cameta:accessToken',
+          '@monitora_tocantins:access_token',
           JSON.stringify(res.data.data.access_token),
         );
         await AsyncStorage.setItem(
-          '@monitora_cameta:user',
+          '@monitora_tocantins:user',
           JSON.stringify(res.data.data.user),
         );
         setUser(res.data.data.user);
@@ -106,61 +108,15 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
         } else {
           reject('Verifique suas credenciais e tente novamente!');
         }
-        // console.log("Error auth =>", error.response);
       }
     });
-    // setLoading(true);
-    // try {
-    //   const response = await api.post('/auth/authenticate', {
-    //     document,
-    //     document_type: documentType,
-    //     password,
-    //   });
-    //   api.defaults.headers.Authorization = `Bearer ${response.data.data.access_token}`;
-    //   await AsyncStorage.setItem(
-    //     '@monitora_cameta:accessToken',
-    //     JSON.stringify(response.data.data.access_token),
-    //   );
-    //   await AsyncStorage.setItem(
-    //     '@monitora_cameta:user',
-    //     JSON.stringify(response.data.data.user),
-    //   );
-    //   setUser(response.data.data.user);
-    //   setIsAuthenticated(true);
-    //   Toast.show({
-    //     type: 'success',
-    //     text1: 'Sucesso',
-    //     text2: 'Bem vindo ao Monitora Tocantins',
-    //     autoHide: true,
-    //   });
-    //   setLoading(false);
-    // } catch (error: any) {
-    //   if (error.response) {
-    //     console.log(error.response.data);
-    //     Toast.show({
-    //       type: 'error',
-    //       text1: 'Login',
-    //       text2: error.response.data.error.message,
-    //       autoHide: true,
-    //     });
-    //   } else {
-    //     console.log('Error', error.message);
-    //     Toast.show({
-    //       type: 'error',
-    //       text1: 'Error',
-    //       text2: 'Ocorreu um erro ao conectar com o servidor',
-    //       autoHide: true,
-    //     });
-    //   }
-    //   setLoading(false);
-    // }
   };
 
   useEffect(() => {
     loadStorage();
 
     const unsubscribe = NetInfo.addEventListener(state => {
-      console.log('Connection type', state.type);
+      console.log('Connection type', state.isInternetReachable);
       console.log('Is connected?', state.isConnected);
       setIsConnected(state.isConnected);
     });
