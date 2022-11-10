@@ -130,7 +130,7 @@ const Home: React.FC = () => {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('about');
+                navigation.navigate('profile');
               }}>
               <Avatar.Text
                 size={46}

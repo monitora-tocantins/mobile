@@ -11,22 +11,33 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserAdd from 'react-native-vector-icons/Ionicons';
+import { useAuth } from '../../hooks/useAuth';
+import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 
 const About: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
   const theme = useTheme();
+  const { user } = useAuth();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          backgroundColor={theme.colors.background}
+        />
         <View style={styles.header}>
           <View style={styles.wrapperLogo}>
             <View style={styles.wrapperPerfil}>
               <UserPerfil name="user-circle" size={56} />
               <View style={styles.wrapperName}>
-                <Text style={styles.name}>Ilanildo Viana</Text>
-                <Text style={[styles.email, { color: theme.colors.secondary }]}>
-                  ilannildoviana12@gmail.com
-                </Text>
+                <Text style={styles.name}>{user.name}</Text>
+                {user.email && (
+                  <Text
+                    style={[styles.email, { color: theme.colors.secondary }]}>
+                    {user.email}
+                  </Text>
+                )}
               </View>
             </View>
           </View>
@@ -38,7 +49,7 @@ const About: React.FC = () => {
               <Ionicons name="person-outline" size={heightPercentToDP('4%')} />
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('home');
+                  navigation.navigate('personalData');
                 }}>
                 <Text style={styles.titleButto}>Dados pessoais</Text>
               </TouchableOpacity>
@@ -140,11 +151,11 @@ const styles = StyleSheet.create({
     marginTop: '6%',
   },
   titleCard: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   titleButto: {
-    fontSize: 20,
+    fontSize: 17,
     marginLeft: 32,
     fontWeight: 'bold',
   },

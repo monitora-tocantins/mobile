@@ -10,16 +10,21 @@ import { StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Home = Loadable(lazy(() => import('../screens/Home')));
-const About = Loadable(lazy(() => import('../screens/Profile')));
+const Profile = Loadable(lazy(() => import('../screens/Profile')));
 const Dashboard = Loadable(lazy(() => import('../screens/Dashboard')));
 const Form = Loadable(lazy(() => import('../screens/Form')));
+
+const PersonalData = Loadable(
+  lazy(() => import('../screens/Profile/component/PersonalData')),
+);
 
 const StackNavigator = createStackNavigator();
 
 type RootStackParamList = {
   dashboard: undefined;
   form: undefined;
-  about: undefined;
+  profile: undefined;
+  personalData: undefined;
 };
 
 export type AppScreensProps = StackNavigationProp<RootStackParamList>;
@@ -37,10 +42,13 @@ const AppRoutes: React.FC = () => {
         }}
       />
       <StackNavigator.Screen
-        name="about"
-        component={About}
+        name="profile"
+        component={Profile}
         options={{
           headerTitle: 'Perfil',
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
           headerShadowVisible: false,
           headerTitleAlign: 'center',
           headerLeft: ({ ...props }) => (
@@ -52,6 +60,18 @@ const AppRoutes: React.FC = () => {
               style={styles.icon}
             />
           ),
+        }}
+      />
+      <StackNavigator.Screen
+        name="personalData"
+        component={PersonalData}
+        options={{
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+          headerTitle: 'Dados pessoais',
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
         }}
       />
       <StackNavigator.Screen
