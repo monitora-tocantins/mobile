@@ -17,6 +17,9 @@ const Form = Loadable(lazy(() => import('../screens/Form')));
 const PersonalData = Loadable(
   lazy(() => import('../screens/Profile/component/PersonalData')),
 );
+const AdressData = Loadable(
+  lazy(() => import('../screens/Profile/component/AddressData')),
+);
 
 const StackNavigator = createStackNavigator();
 
@@ -25,6 +28,7 @@ type RootStackParamList = {
   form: undefined;
   profile: undefined;
   personalData: undefined;
+  adressData: undefined;
 };
 
 export type AppScreensProps = StackNavigationProp<RootStackParamList>;
@@ -70,6 +74,18 @@ const AppRoutes: React.FC = () => {
             backgroundColor: colors.background,
           },
           headerTitle: 'Dados pessoais',
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+        }}
+      />
+      <StackNavigator.Screen
+        name="adressData"
+        component={AdressData}
+        options={{
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+          headerTitle: 'Endereço',
           headerTitleAlign: 'center',
           headerShadowVisible: false,
         }}
