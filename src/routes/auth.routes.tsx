@@ -14,10 +14,7 @@ type RootStackParamList = {
   register: undefined;
 };
 
-export type authScreensProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'login'
->;
+export type authScreensProp = NativeStackNavigationProp<RootStackParamList>;
 
 const StackNavigator = createNativeStackNavigator();
 

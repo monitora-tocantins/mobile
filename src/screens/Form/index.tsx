@@ -17,6 +17,11 @@ import { FormMoreInformation } from './components/FormMoreInformation';
 import { FormAddress } from './components/FormAddress';
 import { FormSchool } from './components/FormSchool';
 import { FormComorbidity } from './components/FormComorbidity';
+import { FormComorbidityOptions } from './components/FormComorbidityOptions';
+import { FormContactCovid } from './components/FormContactCovid';
+import { FormDiagnosticConfirmation } from './components/FormDiagnosticConfirmation';
+import { FormDiagnosticConfirmationInterval } from './components/FormDiagnosticConfirmationInterval';
+import { FormTratamentPlace } from './components/FormTratamentPlace';
 
 const Form: React.FC = () => {
   const theme = useTheme();
@@ -106,6 +111,13 @@ const Form: React.FC = () => {
   const [streetError, setStreetError] = useState<string>('');
   const [schoolLevelError, setSchoolLevelError] = useState<string>('');
   const [religionError, setReligionError] = useState<string>('');
+  const [timeIntervalError, setTimeIntervalError] = useState<string>('');
+  const [diagnosticMethodError, setDiagnosticMethodError] =
+    useState<string>('');
+  const [treatmentPlaceError, setTreatmentPlaceError] = useState<string>('');
+
+  const [comorbidityOptionsNone, setComorbidityOptionsNone] = useState(false);
+  const [otherComorbidityError, setOtherComorbidityError] = useState('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
 
   const navigation = useNavigation<AppScreensProps>();
@@ -202,6 +214,80 @@ const Form: React.FC = () => {
     return true;
   };
 
+  const validadeComorbidityOptions = () => {
+    Keyboard.dismiss();
+
+    if (
+      !diabetes &&
+      !heartProblem &&
+      !kidneyDisease &&
+      !thyroid &&
+      !obesity &&
+      !comorbidityOptionsNone
+    ) {
+      ToastAndroid.show('Você precisa selecionar uma opção', ToastAndroid.LONG);
+      return false;
+    }
+
+    if (comorbidityOptionsNone && otherComorbidity === '') {
+      setOtherComorbidityError('Informe as outras comorbidades');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeContactCovid = () => {
+    Keyboard.dismiss();
+
+    if (affectedCovid19 === undefined) {
+      ToastAndroid.show('Você precisa selecionar uma opção', ToastAndroid.LONG);
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeDiagnosticConfirmation = () => {
+    Keyboard.dismiss();
+
+    if (diagnosticConfirmation === undefined) {
+      ToastAndroid.show('Você precisa selecionar uma opção', ToastAndroid.LONG);
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeDiagnosticConfirmationInterval = () => {
+    Keyboard.dismiss();
+    setTimeIntervalError('');
+    setDiagnosticMethodError('');
+
+    if (timeInterval === '') {
+      setTimeIntervalError('Intervalo de tempo é obrigatório');
+      return false;
+    }
+
+    if (diagnosticMethod === '') {
+      setDiagnosticMethodError('Método de diagnóstico é obrigatório');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeTratamentPlace = () => {
+    Keyboard.dismiss();
+
+    if (treatmentPlace === '') {
+      setTreatmentPlaceError('Local de tratamento é obrigatório');
+      return false;
+    }
+
+    return true;
+  };
+
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
@@ -249,18 +335,61 @@ const Form: React.FC = () => {
           setActiveStep(prevActiveStep => prevActiveStep + 1);
           setSkipped(newSkipped);
         } else if (comorbidity === false) {
-          handleStep(6);
+          setSkipped(newSkipped);
+          setActiveStep(prevActiveStep => prevActiveStep + 2);
+        }
+      }
+    }
+    if (activeStep === 5) {
+      if (validadeComorbidityOptions()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 6) {
+      if (validadeContactCovid()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 7) {
+      if (validadeDiagnosticConfirmation()) {
+        if (diagnosticConfirmation === true) {
+          setActiveStep(prevActiveStep => prevActiveStep + 1);
+          setSkipped(newSkipped);
+        } else {
+          setSkipped(newSkipped);
+          setActiveStep(12);
+        }
+      }
+    }
+    if (activeStep === 8) {
+      if (validadeDiagnosticConfirmationInterval()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 9) {
+      if (validadeTratamentPlace()) {
+        if (treatmentPlace === 'Casa') {
+          setActiveStep(11);
+          setSkipped(newSkipped);
+        } else {
+          setActiveStep(prevActiveStep => prevActiveStep + 1);
+          setSkipped(newSkipped);
         }
       }
     }
   };
 
   const handleBack = () => {
+    if (activeStep === 6) {
+      if (comorbidity === true) {
+        return setActiveStep(prevActiveStep => prevActiveStep - 1);
+      }
+      return setActiveStep(prevActiveStep => prevActiveStep - 2);
+    }
     setActiveStep(prevActiveStep => prevActiveStep - 1);
-  };
-
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
   };
 
   const handleSubmit = () => {
@@ -360,95 +489,80 @@ const Form: React.FC = () => {
         />
       ),
     },
-    // {
-    //   key: '6',
-    //   title: 'Mapeamento pós covid-19: contágio e sequelas',
-    //   description: 'Possui pelo menos uma comorbidade?',
-    //   form: (
-    //     <CensusFormComorbidityOptions
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       diabetes={diabetes}
-    //       setDiabetes={setDiabetes}
-    //       heartProblem={heartProblem}
-    //       setHeartProblem={setHeartProblem}
-    //       kidneyDisease={kidneyDisease}
-    //       setKidneyDisease={setKidneyDisease}
-    //       thyroid={thyroid}
-    //       setThyroid={setThyroid}
-    //       obesity={obesity}
-    //       setObesity={setObesity}
-    //       otherComorbidity={otherComorbidity}
-    //       setOtherComorbidity={setOtherComorbidity}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '7',
-    //   title: 'Contato com o Covid-19',
-    //   description: 'Você foi acometido pela COVID-19 nos últimos anos?',
-    //   form: (
-    //     <CensusFormContactCovid
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       affectedCovid19={affectedCovid19}
-    //       setAffectedCovid19={setAffectedCovid19}
-    //       comorbidity={comorbidity}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '8',
-    //   title: 'Confirmação do diagnóstico',
-    //   description: 'Você obteve confirmação por diagnóstico?',
-    //   form: (
-    //     <CensusFormDiagnosticConfirmation
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       diagnosticConfirmation={diagnosticConfirmation}
-    //       setDiagnosticConfirmation={setDiagnosticConfirmation}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '9',
-    //   title: 'Intervalo de tempo',
-    //   description: '',
-    //   form: (
-    //     <CensusFormDiagnosticConfirmationInterval
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       timeInterval={timeInterval}
-    //       setTimeInterval={setTimeInterval}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '10',
-    //   title: 'Método de diagnóstico',
-    //   description: '',
-    //   form: (
-    //     <CensusFormDiagnosticConfirmationOptions
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       diagnosticMethod={diagnosticMethod}
-    //       setDiagnosticMethod={setDiagnosticMethod}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '11',
-    //   title: 'Local de tratamento',
-    //   description: '',
-    //   form: (
-    //     <CensusFormTratamentPlace
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       setTreatmentPlace={setTreatmentPlace}
-    //       treatmentPlace={treatmentPlace}
-    //     />
-    //   ),
-    // },
+    {
+      key: '6',
+      title: 'Comorbidade',
+      description: 'Quais comorbidades você possui?',
+      form: (
+        <FormComorbidityOptions
+          diabetes={diabetes}
+          setDiabetes={setDiabetes}
+          heartProblem={heartProblem}
+          setHeartProblem={setHeartProblem}
+          kidneyDisease={kidneyDisease}
+          setKidneyDisease={setKidneyDisease}
+          thyroid={thyroid}
+          setThyroid={setThyroid}
+          obesity={obesity}
+          setObesity={setObesity}
+          otherComorbidity={otherComorbidity}
+          setOtherComorbidity={setOtherComorbidity}
+          comorbidityOptionsNone={comorbidityOptionsNone}
+          setComorbidityOptionsNone={setComorbidityOptionsNone}
+          otherComorbidityError={otherComorbidityError}
+          setOtherComorbidityError={setOtherComorbidityError}
+        />
+      ),
+    },
+    {
+      key: '7',
+      title: 'Contato com o Covid-19',
+      description: 'Você foi acometido pela COVID-19 nos últimos anos?',
+      form: (
+        <FormContactCovid
+          affectedCovid19={affectedCovid19}
+          setAffectedCovid19={setAffectedCovid19}
+        />
+      ),
+    },
+    {
+      key: '8',
+      title: 'Confirmação do diagnóstico',
+      description: 'Você obteve confirmação por diagnóstico?',
+      form: (
+        <FormDiagnosticConfirmation
+          diagnosticConfirmation={diagnosticConfirmation}
+          setDiagnosticConfirmation={setDiagnosticConfirmation}
+        />
+      ),
+    },
+    {
+      key: '9',
+      title: 'Confirmação do diagnóstico',
+      description: 'Intervalo de tempo do dignóstico',
+      form: (
+        <FormDiagnosticConfirmationInterval
+          timeInterval={timeInterval}
+          setTimeInterval={setTimeInterval}
+          diagnosticMethod={diagnosticMethod}
+          diagnosticMethodError={diagnosticMethodError}
+          setDiagnosticMethod={setDiagnosticMethod}
+          timeIntervalError={timeIntervalError}
+        />
+      ),
+    },
+    {
+      key: '11',
+      title: 'Local de tratamento',
+      description: '',
+      form: (
+        <FormTratamentPlace
+          setTreatmentPlace={setTreatmentPlace}
+          treatmentPlace={treatmentPlace}
+          treatmentPlaceError={treatmentPlaceError}
+        />
+      ),
+    },
     // {
     //   key: '12',
     //   title: 'Tratamento no hospital',

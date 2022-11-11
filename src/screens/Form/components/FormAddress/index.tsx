@@ -70,7 +70,7 @@ export const FormAddress: React.FC<Props> = ({
         const result = await axios.get(
           `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`,
           {
-            timeout: 3000,
+            timeout: 1000,
           },
         );
         setCity(result.data.address.city);

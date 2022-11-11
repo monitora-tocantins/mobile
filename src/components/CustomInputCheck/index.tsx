@@ -51,7 +51,7 @@ export const CustomInputCheck: React.FC<Props> = ({
         <View style={styles.iconContainer}>
           <MaterialIcons
             name="check-circle"
-            color={theme.colors.primary}
+            color={theme.colors.onPrimary}
             size={14}
           />
         </View>
