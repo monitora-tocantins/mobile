@@ -1,23 +1,27 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { heightPercentToDP, widthPercentToDP } from '../../libs';
-import { Text, useTheme } from 'react-native-paper';
+import { heightPercentToDP } from '../../libs';
+import {
+  Avatar,
+  Button,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AppScreensProps } from '../../routes/app.routes';
-import UserPerfil from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import UserAdd from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../hooks/useAuth';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
+import { stringToColor } from '../../utils/mask';
 
 const About: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
   const theme = useTheme();
-  const { user } = useAuth();
+  const { user, logout, loading } = useAuth();
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -29,16 +33,25 @@ const About: React.FC = () => {
         <View style={styles.header}>
           <View style={styles.wrapperLogo}>
             <View style={styles.wrapperPerfil}>
-              <UserPerfil
-                color={theme.colors.onPrimaryContainer}
-                name="user-circle"
-                size={56}
+              <Avatar.Text
+                size={46}
+                label={`${
+                  user.name
+                    .replace(/\s(de|da|dos|das)\s/g, ' ')
+                    .split(' ')[0][0]
+                }`}
+                style={{
+                  backgroundColor: stringToColor(user.name),
+                }}
               />
               <View style={styles.wrapperName}>
-                <Text style={styles.name}>{user.name}</Text>
+                <Text variant="titleLarge" style={styles.name}>
+                  {user.name}
+                </Text>
                 {user.email && (
                   <Text
-                    style={[styles.email, { color: theme.colors.secondary }]}>
+                    variant="titleMedium"
+                    style={[{ color: theme.colors.secondary }]}>
                     {user.email}
                   </Text>
                 )}
@@ -46,80 +59,102 @@ const About: React.FC = () => {
             </View>
           </View>
         </View>
-        <View style={styles.wrapperData}>
-          <View style={styles.wrapperCard}>
-            <Text style={styles.titleCard}>Conta</Text>
-            <View style={styles.wrapperButto}>
-              <Ionicons
-                name="person-outline"
-                color={theme.colors.onPrimaryContainer}
-                size={heightPercentToDP('4%')}
-              />
-              <TouchableOpacity
+        <View style={styles.formWrapper}>
+          <View>
+            <View style={styles.wrapperCard}>
+              <Text variant="titleLarge" style={styles.titleCard}>
+                Conta
+              </Text>
+              <TouchableRipple
+                style={styles.wrapperButto}
                 onPress={() => {
                   navigation.navigate('personalData');
                 }}>
-                <Text style={styles.titleButto}>Dados pessoais</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.wrapperButto}>
-              <Feather
-                name="map-pin"
-                color={theme.colors.onPrimaryContainer}
-                size={heightPercentToDP('4%')}
-              />
-              <TouchableOpacity
+                <>
+                  <MaterialIcons
+                    name="person-outline"
+                    color={theme.colors.onPrimaryContainer}
+                    size={heightPercentToDP('3%')}
+                  />
+                  <Text style={styles.titleButto}>Dados pessoais</Text>
+                </>
+              </TouchableRipple>
+              <TouchableRipple
+                style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('adressData');
+                  navigation.navigate('personalData');
                 }}>
-                <Text style={styles.titleButto}>Endereço</Text>
-              </TouchableOpacity>
+                <>
+                  <Feather
+                    name="map-pin"
+                    color={theme.colors.onPrimaryContainer}
+                    size={heightPercentToDP('3%')}
+                  />
+
+                  <Text style={styles.titleButto}>Endereço</Text>
+                </>
+              </TouchableRipple>
             </View>
-          </View>
-          <View style={styles.wrapperCard}>
-            <Text style={styles.titleCard}>Geral</Text>
-            <View style={styles.wrapperButto}>
-              <MaterialIcons
-                name="contact-support"
-                color={theme.colors.onPrimaryContainer}
-                size={heightPercentToDP('4%')}
-              />
-              <TouchableOpacity
+            <View style={styles.wrapperCard}>
+              <Text variant="titleLarge" style={styles.titleCard}>
+                Geral
+              </Text>
+              <TouchableRipple
+                style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('home');
+                  navigation.navigate('personalData');
                 }}>
-                <Text style={styles.titleButto}>Suporte</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.wrapperButto}>
-              <MaterialCommunityIcons
-                color={theme.colors.onPrimaryContainer}
-                name="clipboard-text-outline"
-                size={heightPercentToDP('4%')}
-              />
-              <TouchableOpacity
+                <>
+                  <MaterialIcons
+                    name="help-outline"
+                    color={theme.colors.onPrimaryContainer}
+                    size={heightPercentToDP('3%')}
+                  />
+                  <Text style={styles.titleButto}>Suporte</Text>
+                </>
+              </TouchableRipple>
+              <TouchableRipple
+                style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('home');
+                  navigation.navigate('personalData');
                 }}>
-                <Text style={styles.titleButto}>Sobre</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.wrapperButto}>
-              <UserAdd
-                name="person-add-outline"
-                color={theme.colors.onPrimaryContainer}
-                size={heightPercentToDP('4%')}
-              />
-              <TouchableOpacity
+                <>
+                  <MaterialCommunityIcons
+                    color={theme.colors.onPrimaryContainer}
+                    name="clipboard-text-outline"
+                    size={heightPercentToDP('3%')}
+                  />
+                  <Text style={styles.titleButto}>Sobre</Text>
+                </>
+              </TouchableRipple>
+              <TouchableRipple
+                style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('home');
+                  navigation.navigate('personalData');
                 }}>
-                <Text style={styles.titleButto}>Convidar amigos</Text>
-              </TouchableOpacity>
+                <>
+                  <MaterialIcons
+                    name="person-add-alt"
+                    color={theme.colors.onPrimaryContainer}
+                    size={heightPercentToDP('3%')}
+                  />
+                  <Text style={styles.titleButto}>Convidar amigos</Text>
+                </>
+              </TouchableRipple>
             </View>
           </View>
         </View>
       </ScrollView>
+      <View style={styles.buttons}>
+        <Button
+          onPress={() => logout()}
+          disabled={loading}
+          contentStyle={styles.button}
+          loading={loading}
+          mode="contained">
+          Sair da conta
+        </Button>
+      </View>
     </SafeAreaView>
   );
 };
@@ -130,6 +165,14 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+  },
+  buttons: {
+    width: '100%',
+    marginBottom: 24,
+    paddingHorizontal: 24,
+  },
+  button: {
+    height: 46,
   },
   wrapperLogo: {
     width: '100%',
@@ -143,90 +186,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wrapperName: {
-    marginLeft: 20,
+    marginLeft: 16,
   },
   name: {
-    fontSize: 20,
     fontWeight: 'bold',
-  },
-  email: {
-    fontSize: 18,
-  },
-  wrapperData: {
-    paddingHorizontal: 24,
   },
   wrapperCard: {
     marginTop: '5%',
   },
-
   wrapperButto: {
-    paddingHorizontal: 16,
+    paddingVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: '6%',
   },
   titleCard: {
-    fontSize: 22,
+    // fontSize: 22,
     fontWeight: 'bold',
   },
   titleButto: {
     fontSize: 17,
     marginLeft: 32,
-    fontWeight: 'bold',
-  },
-
-  titleArea: {
-    flexDirection: 'row',
-  },
-  titleApp: {
-    fontSize: 18,
-  },
-  titleApp2: {
-    fontSize: 18,
-  },
-  description: {
-    fontSize: 16,
   },
   version: {
-    fontSize: 12,
     textAlign: 'center',
   },
-  copyright: {
-    marginTop: 20,
-    marginBottom: 30,
-  },
-  body: {
-    borderBottomWidth: 0.7,
-    borderTopWidth: 0.7,
-    padding: 10,
-    marginBottom: 30,
-  },
-  buttonBody: {
-    padding: 10,
-  },
-  textBody: {
-    fontSize: 16,
-  },
-  footer: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  wrapperLogout: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  buttonAvaliation: {
-    width: widthPercentToDP('80%'),
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    marginBottom: 10,
-  },
-  textButtonAvaliation: {
-    fontSize: 16,
+  formWrapper: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
   },
 });
 

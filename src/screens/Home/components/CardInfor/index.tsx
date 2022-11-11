@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   // Effect load
   dateUpdateCaseLoad: {
     width: widthPercentToDP('50%'),
-    height: 15,
+    height: 5,
     borderRadius: 2,
   },
 });

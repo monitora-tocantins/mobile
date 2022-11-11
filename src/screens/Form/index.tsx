@@ -552,7 +552,7 @@ const Form: React.FC = () => {
       ),
     },
     {
-      key: '11',
+      key: '10',
       title: 'Local de tratamento',
       description: '',
       form: (

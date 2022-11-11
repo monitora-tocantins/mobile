@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,11 +20,16 @@ import CardQuestions from './components/CardQuestions';
 // import TitleApp from '../../components/TitleApp';
 // import { preventions, symptoms } from '../../data';
 import axios from 'axios';
-import { Avatar, Text, useTheme } from 'react-native-paper';
+import { Avatar, Text, Title, useTheme } from 'react-native-paper';
 import { AppScreensProps } from '../../routes/app.routes';
 import { UserType } from '../../utils/constant';
 import { useAuth } from '../../hooks/useAuth';
 import { stringToColor } from '../../utils/mask';
+import { CardNews, INews } from '../../components/CardNews';
+import { format } from 'date-fns';
+import ListInfo from './components/ListInfo';
+import { preventions, symptoms } from '../../data';
+import { CardNewsLoading } from '../../components/CardNewsLoading';
 
 type CovidCases = {
   updatedDate: string;
@@ -35,6 +41,9 @@ type CovidCases = {
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [covidError, setCovidError] = useState('');
+  const [news, setNews] = useState<INews[]>([]);
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
+  const [refreshing, setRefreshing] = React.useState(false);
   const [covidCases, setCovidCases] = useState<CovidCases>({
     updatedDate: '',
     death: 0,
@@ -66,8 +75,8 @@ const Home: React.FC = () => {
           recovered: response.data.results[0].estimated_population,
         });
 
-        //console.log(`${response.data.results[0].confirmed}`);
-
+        setLoading(false);
+      } else {
         setLoading(false);
       }
     } catch (error: any) {
@@ -80,11 +89,39 @@ const Home: React.FC = () => {
       }
     }
   };
+  const handleGetNews = async () => {
+    setIsLoadingNews(true);
+    const now = format(new Date(), 'yyyy-MM-dd');
+    try {
+      const response = await axios.get(
+        `https://newsapi.org/v2/everything?language=pt&q=coronav%C3%ADrus&from=${now}&sortBy=publishedAt&pageSize=5&apiKey=3a060234bdaf4fba99633baf09b905c9`,
+      );
+      if (mounted.current) {
+        setNews(response.data.articles);
+        setIsLoadingNews(false);
+      } else {
+        setIsLoadingNews(false);
+      }
+    } catch (error: any) {
+      console.log('Error', error);
+    }
+  };
 
   const handleRefresh = async () => {
     setCovidError('');
     await handleGetCovidCases();
   };
+
+  const onRefresh = React.useCallback(async () => {
+    try {
+      setRefreshing(true);
+      await handleGetCovidCases();
+      await handleGetNews();
+      setRefreshing(false);
+    } catch (error) {
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
     const callLocation = async () => {
@@ -99,6 +136,7 @@ const Home: React.FC = () => {
 
     callLocation();
     handleGetCovidCases();
+    handleGetNews();
 
     return () => {
       mounted.current = false;
@@ -116,7 +154,17 @@ const Home: React.FC = () => {
           barStyle="dark-content"
           backgroundColor={theme.colors.background}
         />
-        <ScrollView overScrollMode="never" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          overScrollMode="never"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.colors.primary]}
+              progressBackgroundColor={theme.colors.background}
+            />
+          }>
           <View style={styles.header}>
             <Image
               source={require('../../assets/logo-transp.png')}
@@ -175,25 +223,28 @@ const Home: React.FC = () => {
               />
             )}
           </View>
+          <View style={styles.contentNews}>
+            <Title style={styles.title}>Últimas notícias</Title>
+            {isLoadingNews && (
+              <>
+                <CardNewsLoading />
+                <CardNewsLoading />
+              </>
+            )}
+            {news.map(item => (
+              <CardNews key={item.url} news={item} />
+            ))}
+          </View>
 
-          {/* <CardQuestions
-              title="Formulário sobre a vacina"
-              description="Contém uma lista de várias perguntas para verificar sua condição física"
-              Icon={VacinaSvg}
-              // disable
-              backgroundColor="#5BC4FF"
-              onPress={handleNavigationVaccineForm}
-            /> */}
-
-          {/* <View>
-            <Text style={styles.titleList}>Como se prevenir?</Text>
+          <View style={styles.contentInfo}>
+            <Title style={styles.title}>Como se prevenir?</Title>
             <ListInfo data={preventions} />
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.titleList}>Quais são os sintomas?</Text>
+          <View style={styles.contentInfo}>
+            <Title style={styles.title}>Quais são os sintomas?</Title>
             <ListInfo data={symptoms} />
-          </View> */}
+          </View>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -216,6 +267,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
+  contentNews: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginBottom: 48,
+  },
+  contentInfo: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
   wrapperTitle: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -234,10 +294,6 @@ const styles = StyleSheet.create({
   },
   titleApp2: {
     fontSize: 18,
-  },
-  titleList: {
-    fontSize: 25,
-    marginLeft: 20,
   },
   footer: {
     paddingBottom: 30,
@@ -258,6 +314,9 @@ const styles = StyleSheet.create({
   },
   modalFooter: {
     marginBottom: 20,
+  },
+  title: {
+    fontWeight: '600',
   },
 });
 

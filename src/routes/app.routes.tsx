@@ -29,6 +29,7 @@ type RootStackParamList = {
   profile: undefined;
   personalData: undefined;
   adressData: undefined;
+  home: undefined;
 };
 
 export type AppScreensProps = StackNavigationProp<RootStackParamList>;

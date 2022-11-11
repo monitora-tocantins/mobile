@@ -280,7 +280,7 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
     paddingVertical: 8,
     alignItems: 'center',
   },

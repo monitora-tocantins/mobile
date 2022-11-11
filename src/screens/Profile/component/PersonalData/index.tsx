@@ -4,14 +4,13 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Text,
   SafeAreaView,
 } from 'react-native';
-import { Button, TextInput, useTheme } from 'react-native-paper';
-import UserPerfil from 'react-native-vector-icons/FontAwesome';
+import { Avatar, Button, Text, TextInput, useTheme } from 'react-native-paper';
 import { useAuth } from '../../../../hooks/useAuth';
 import { FocusAwareStatusBar } from '../../../../components/FocusAwareStatusBar';
 import Select from '../../../../components/Select';
+import { stringToColor } from '../../../../utils/mask';
 
 const PersonalData: React.FC = ({}) => {
   const theme = useTheme();
@@ -51,15 +50,24 @@ const PersonalData: React.FC = ({}) => {
               <View style={styles.header}>
                 <View style={styles.wrapperLogo}>
                   <View style={styles.wrapperPerfil}>
-                    <UserPerfil
-                      color={theme.colors.onPrimaryContainer}
-                      name="user-circle"
-                      size={56}
+                    <Avatar.Text
+                      size={46}
+                      label={`${
+                        user.name
+                          .replace(/\s(de|da|dos|das)\s/g, ' ')
+                          .split(' ')[0][0]
+                      }`}
+                      style={{
+                        backgroundColor: stringToColor(user.name),
+                      }}
                     />
                     <View style={styles.wrapperName}>
-                      <Text style={styles.name}>{user.name}</Text>
+                      <Text variant="titleLarge" style={styles.name}>
+                        {user.name}
+                      </Text>
                       {user.email && (
                         <Text
+                          variant="titleMedium"
                           style={[
                             styles.email,
                             { color: theme.colors.secondary },
@@ -84,21 +92,6 @@ const PersonalData: React.FC = ({}) => {
                   }}
                 />
               </View>
-              {/*<View style={styles.wrapperImput}>
-                 <TextInput
-                  label="CPF"
-                  disabled
-                  keyboardType="numeric"
-                  mode="outlined"
-                  value={cpf}
-                  error={!!cpfError}
-                  onChangeText={text => {
-                    setCpf(text);
-                    setCpfError('');
-                  }}
-                />
-</View>
-*/}
               <View style={styles.wrapperImput}>
                 <TextInput
                   label="Email"
@@ -206,13 +199,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   name: {
-    fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
   },
-  email: {
-    fontSize: 18,
-  },
+  email: {},
   wrapperImput: {
     width: '100%',
     marginTop: 8,

@@ -16,7 +16,7 @@ import {
   HelperText,
 } from 'react-native-paper';
 
-import LogoImg from '../../assets/logo.png';
+import LogoImg from '../../assets/logo-transp.png';
 import { useAuth } from '../../hooks/useAuth';
 import { authScreensProp } from '../../routes/auth.routes';
 import { maskCpf, validateCpf, validateEmail } from '../../utils/mask';
@@ -196,7 +196,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 32,
+    padding: 24,
     alignItems: 'center',
   },
   header: {
