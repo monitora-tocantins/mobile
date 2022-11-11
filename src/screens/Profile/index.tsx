@@ -17,11 +17,28 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useAuth } from '../../hooks/useAuth';
 import { FocusAwareStatusBar } from '../../components/FocusAwareStatusBar';
 import { stringToColor } from '../../utils/mask';
+import Share from 'react-native-share';
 
 const About: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
   const theme = useTheme();
   const { user, logout, loading } = useAuth();
+  const onShare = async () => {
+    try {
+      const result = await Share.open({
+        title: 'Monitora Tocantins',
+        urls: ['https://monitoratocantins-front.herokuapp.com/app/download'],
+        message:
+          'O aplicativo monitora tocantins é um app desenvolvido pelo LASEDi',
+        url: 'https://monitoratocantins-front.herokuapp.com/app/download',
+      });
+      if (result.success) {
+        console.log('Message', result.message);
+      }
+    } catch (error: any) {
+      console.log('Message', error.message);
+    }
+  };
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -82,7 +99,7 @@ const About: React.FC = () => {
               <TouchableRipple
                 style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('personalData');
+                  navigation.navigate('adressData');
                 }}>
                 <>
                   <Feather
@@ -130,7 +147,7 @@ const About: React.FC = () => {
               <TouchableRipple
                 style={styles.wrapperButto}
                 onPress={() => {
-                  navigation.navigate('personalData');
+                  onShare();
                 }}>
                 <>
                   <MaterialIcons
