@@ -67,7 +67,7 @@ export const FormMoreInformation: React.FC<Props> = ({
                   },
                 ]}
               />
-              <HelperText type="error" visible={false}>
+              <HelperText type="error" visible={!!ageGroupError}>
                 {ageGroupError}
               </HelperText>
             </View>

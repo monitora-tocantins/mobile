@@ -65,6 +65,7 @@ export const FormAddress: React.FC<Props> = ({
 
   const getAddress = useCallback(
     async (lat: string, long: string) => {
+      setIsLoading(true);
       try {
         const result = await axios.get(
           `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`,

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Keyboard, StatusBar, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  StatusBar,
+  StyleSheet,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 import { FormIdentification } from './components/FormIdentification';
 import { validateCpf, validateEmail } from '../../utils/mask';
@@ -9,6 +16,7 @@ import { FormCover } from './components/FormCover';
 import { FormMoreInformation } from './components/FormMoreInformation';
 import { FormAddress } from './components/FormAddress';
 import { FormSchool } from './components/FormSchool';
+import { FormComorbidity } from './components/FormComorbidity';
 
 const Form: React.FC = () => {
   const theme = useTheme();
@@ -94,9 +102,10 @@ const Form: React.FC = () => {
   const [cpfError, setCpfError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [ageGroupError, setAgeGroupError] = useState<string>('');
-  const [genderError, setGenderError] = useState<string>('');
   const [cityError, setCityError] = useState<string>('');
   const [streetError, setStreetError] = useState<string>('');
+  const [schoolLevelError, setSchoolLevelError] = useState<string>('');
+  const [religionError, setReligionError] = useState<string>('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
 
   const navigation = useNavigation<AppScreensProps>();
@@ -166,6 +175,33 @@ const Form: React.FC = () => {
     return true;
   };
 
+  const validadeSchool = () => {
+    Keyboard.dismiss();
+
+    if (schollLevel === '') {
+      setSchoolLevelError('Nível escolar é obrigatório');
+      return false;
+    }
+
+    if (religion === '') {
+      setReligionError('Denominação religiosa é obrigatório');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeComorbidity = () => {
+    Keyboard.dismiss();
+
+    if (comorbidity === undefined) {
+      ToastAndroid.show('Você precisa selecionar uma opção', ToastAndroid.LONG);
+      return false;
+    }
+
+    return true;
+  };
+
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
@@ -177,6 +213,7 @@ const Form: React.FC = () => {
       newSkipped.delete(activeStep);
     }
 
+    // finalizar questionário
     if (activeStep === FORMS.length - 1) {
       handleSubmit();
       return;
@@ -200,6 +237,22 @@ const Form: React.FC = () => {
         setSkipped(newSkipped);
       }
     }
+    if (activeStep === 3) {
+      if (validadeSchool()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 4) {
+      if (validadeComorbidity()) {
+        if (comorbidity === true) {
+          setActiveStep(prevActiveStep => prevActiveStep + 1);
+          setSkipped(newSkipped);
+        } else if (comorbidity === false) {
+          handleStep(6);
+        }
+      }
+    }
   };
 
   const handleBack = () => {
@@ -210,7 +263,9 @@ const Form: React.FC = () => {
     setActiveStep(step);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    console.log('Submit');
+  };
 
   const FORMS = [
     {
@@ -289,24 +344,22 @@ const Form: React.FC = () => {
           setSchoolLevel={setSchoolLevel}
           religion={religion}
           setReligion={setReligion}
-          religionError=""
-          schollError=""
+          religionError={religionError}
+          schollError={schoolLevelError}
         />
       ),
     },
-    // {
-    //   key: '5',
-    //   title: 'Mapeamento pós covid-19: contágio e sequelas',
-    //   description: 'Possui pelo menos uma comorbidade?',
-    //   form: (
-    //     <FormComorbidity
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       comorbidity={comorbidity}
-    //       setComorbidity={setComorbidity}
-    //     />
-    //   ),
-    // },
+    {
+      key: '5',
+      title: 'Mapeamento pós covid-19: contágio e sequelas',
+      description: 'Possui pelo menos uma comorbidade?',
+      form: (
+        <FormComorbidity
+          comorbidity={comorbidity}
+          setComorbidity={setComorbidity}
+        />
+      ),
+    },
     // {
     //   key: '6',
     //   title: 'Mapeamento pós covid-19: contágio e sequelas',
