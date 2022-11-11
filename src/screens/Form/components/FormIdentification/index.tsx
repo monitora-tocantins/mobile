@@ -53,59 +53,65 @@ export const FormIdentification: React.FC<Props> = ({
       <ScrollView>
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.formWrapper}>
-            <TextInput
-              label="Nome"
-              placeholder="Digite o nome do entrevistado"
-              keyboardType="name-phone-pad"
-              mode="outlined"
-              value={name}
-              error={!!nameError}
-              onChangeText={text => {
-                setName(text);
-                setNameError('');
-              }}
-            />
-            <HelperText type="error" visible={!!nameError}>
-              {nameError}
-            </HelperText>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                label="Nome *"
+                placeholder="Digite o nome do entrevistado"
+                keyboardType="name-phone-pad"
+                mode="outlined"
+                value={name}
+                error={!!nameError}
+                onChangeText={text => {
+                  setName(text);
+                  setNameError('');
+                }}
+              />
+              <HelperText type="error" visible={!!nameError}>
+                {nameError}
+              </HelperText>
+            </View>
             {!toggleCheckBoxCpf ? (
               <>
-                <TextInput
-                  label="CPF"
-                  placeholder="Digite o CPF do entrevistado"
-                  keyboardType="numeric"
-                  mode="outlined"
-                  autoCapitalize="none"
-                  value={maskCpf(cpf !== undefined ? cpf : '')}
-                  error={!!cpfError}
-                  onChangeText={text => {
-                    setCpf(text.replace(/[^\d]+/g, ''));
-                    setCpfError('');
-                  }}
-                />
-                <HelperText type="error" visible={!!cpfError}>
-                  {cpfError}
-                </HelperText>
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    label="CPF *"
+                    placeholder="Digite o CPF do entrevistado"
+                    keyboardType="numeric"
+                    mode="outlined"
+                    autoCapitalize="none"
+                    value={maskCpf(cpf !== undefined ? cpf : '')}
+                    error={!!cpfError}
+                    onChangeText={text => {
+                      setCpf(text.replace(/[^\d]+/g, ''));
+                      setCpfError('');
+                    }}
+                  />
+                  <HelperText type="error" visible={!!cpfError}>
+                    {cpfError}
+                  </HelperText>
+                </View>
               </>
             ) : (
               <>
-                <TextInput
-                  label="Qual o motivo de não informar o CPF?"
-                  placeholder="Descreva aqui..."
-                  onChangeText={text => {
-                    setReasonNotCpf(text);
-                    setCpf('');
-                  }}
-                  multiline
-                  numberOfLines={3}
-                  mode="outlined"
-                  editable
-                  error={!!cpfError}
-                  value={reasonNotCpf}
-                />
-                <HelperText type="error" visible={!!cpfError}>
-                  {cpfError}
-                </HelperText>
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    label="Qual o motivo de não informar o CPF? *"
+                    placeholder="Descreva aqui..."
+                    onChangeText={text => {
+                      setReasonNotCpf(text);
+                      setCpf('');
+                    }}
+                    multiline
+                    numberOfLines={3}
+                    mode="outlined"
+                    editable
+                    error={!!cpfError}
+                    value={reasonNotCpf}
+                  />
+                  <HelperText type="error" visible={!!cpfError}>
+                    {cpfError}
+                  </HelperText>
+                </View>
               </>
             )}
             <View style={styles.check}>
@@ -125,35 +131,27 @@ export const FormIdentification: React.FC<Props> = ({
                 Prefiro não informar o CPF
               </Text>
             </View>
-            <TextInput
-              label="E-mail"
-              placeholder="Digite o e-mail do entrevistado"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              mode="outlined"
-              value={email}
-              error={!!emailError}
-              onChangeText={text => {
-                setEmail(text);
-                setEmailError('');
-              }}
-            />
-            <HelperText type="error" visible={!!emailError}>
-              {emailError}
-            </HelperText>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                label="E-mail"
+                placeholder="Digite o e-mail do entrevistado"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                mode="outlined"
+                value={email}
+                error={!!emailError}
+                onChangeText={text => {
+                  setEmail(text);
+                  setEmailError('');
+                }}
+              />
+              <HelperText type="error" visible={!!emailError}>
+                {emailError}
+              </HelperText>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-      {/* <View style={styles.buttons}>
-        <Button
-          onPress={() => submit()}
-          disabled={loading}
-          contentStyle={styles.button}
-          loading={loading}
-          mode="contained">
-          Próximo
-        </Button>
-      </View> */}
     </>
   );
 };
@@ -178,5 +176,10 @@ const styles = StyleSheet.create({
   textCheck: {
     fontSize: 16,
     marginLeft: 8,
+  },
+  inputWrapper: {
+    width: '100%',
+    marginTop: 8,
+    marginBottom: 8,
   },
 });

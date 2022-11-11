@@ -5,11 +5,15 @@ import { Button, Text, useTheme } from 'react-native-paper';
 import { FormIdentification } from './components/FormIdentification';
 import { validateCpf, validateEmail } from '../../utils/mask';
 import { AppScreensProps } from '../../routes/app.routes';
+import { FormCover } from './components/FormCover';
+import { FormMoreInformation } from './components/FormMoreInformation';
+import { FormAddress } from './components/FormAddress';
+import { FormSchool } from './components/FormSchool';
 
 const Form: React.FC = () => {
   const theme = useTheme();
   const [isFinish, setIsFinish] = useState(false);
-  const [isStated, setIsStarted] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
@@ -19,18 +23,93 @@ const Form: React.FC = () => {
   const [reasonNotCpf, setReasonNotCpf] = useState<string | undefined>(
     undefined,
   );
+  const [ageGroup, setAgeGroup] = useState<string>('');
+  const [gender, setGender] = useState<string>('');
+  const [city, setCity] = useState('Cametá');
+  const [street, setStreet] = useState('');
+  const [district, setDistrict] = useState('');
+  const [county, setCounty] = useState('');
+  const [number, setNumber] = useState('');
+  const [region, setRegion] = useState('Norte');
+  const [zone, setZone] = useState('Urbana');
+  const [uf, setUf] = useState('PA');
+  const [zipcode, setZicode] = useState('68400000');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+
+  // novo formulário do censo 2022
+  const [schollLevel, setSchoolLevel] = useState('');
+  const [religion, setReligion] = useState('');
+  const [comorbidity, setComorbidity] = useState<boolean | undefined>(
+    undefined,
+  );
+  const [diabetes, setDiabetes] = useState<boolean>(false);
+  const [heartProblem, setHeartProblem] = useState<boolean>(false);
+  const [kidneyDisease, setKidneyDisease] = useState<boolean>(false);
+  const [thyroid, setThyroid] = useState<boolean>(false);
+  const [obesity, setObesity] = useState<boolean>(false);
+  const [otherComorbidity, setOtherComorbidity] = useState<string>('');
+  const [affectedCovid19, setAffectedCovid19] = useState<boolean | undefined>(
+    undefined,
+  );
+  const [diagnosticConfirmation, setDiagnosticConfirmation] = useState<
+    boolean | undefined
+  >(undefined);
+  const [timeInterval, setTimeInterval] = useState<string>('');
+  const [diagnosticMethod, setDiagnosticMethod] = useState<string>('');
+  const [treatmentPlace, setTreatmentPlace] = useState<string>('');
+  const [hospitalTreatment, setHospitalTreatment] = useState<string>('');
+  const [covidSequelae, setCovidSequelae] = useState<string>('');
+
+  // news questions
+  const [vaccinated, setVaccinated] = useState<boolean | undefined>(undefined);
+  const [vaccineDoses, setVaccineDoses] = useState('');
+  const [reasonNotToTake, setReasonNotToTake] = useState('');
+  const [lostFamilyMember, setLostFamilyMember] = useState<boolean | undefined>(
+    undefined,
+  );
+  const [affectedCovidAfterVaccinated, setAffectedCovidAfterVaccinated] =
+    useState<boolean | undefined>(undefined);
+  const [rehabilitationSequelae, setRehabilitationSequelae] = useState<
+    boolean | undefined
+  >(undefined);
+  const [treatmentRehabilitationSequelae, setTreatmentRehabilitationSequelae] =
+    useState('');
+  const [opinionPreventionMeasures, setOpinionPreventionMeasures] =
+    useState('');
+  const [covidInformation, setCovidInformation] = useState('');
+  const [maintainedFamilyIncome, setMaintainedFamilyIncome] = useState<
+    boolean | undefined
+  >(undefined);
+  const [receivedSocialAssistance, setReceivedSocialAssistance] = useState<
+    boolean | undefined
+  >(undefined);
+  const [recoveredFamilyIncome, setRecoveredFamilyIncome] = useState<
+    boolean | undefined
+  >(undefined);
+  const [familyInDebt, setFamilyInDebt] = useState<boolean | undefined>(
+    undefined,
+  );
   const [nameError, setNameError] = useState('');
   const [cpfError, setCpfError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [ageGroupError, setAgeGroupError] = useState<string>('');
+  const [genderError, setGenderError] = useState<string>('');
+  const [cityError, setCityError] = useState<string>('');
+  const [streetError, setStreetError] = useState<string>('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
 
   const navigation = useNavigation<AppScreensProps>();
 
   const validadeFormIdentification = () => {
     Keyboard.dismiss();
+    setNameError('');
+    setCpfError('');
+    setEmailError('');
 
     if (name === '') {
-      return setNameError('O nome é obrigatório');
+      setNameError('O nome é obrigatório');
+      return false;
     }
     if (toggleCheckBoxCpf === false) {
       if (cpf === undefined || cpf === '') {
@@ -53,6 +132,35 @@ const Form: React.FC = () => {
         setEmailError('Digite um e-mail válido');
         return false;
       }
+    }
+
+    return true;
+  };
+  const validadeMoreInformation = () => {
+    Keyboard.dismiss();
+    setAgeGroupError('');
+
+    if (ageGroup === '') {
+      setAgeGroupError('Faixa de idade é obrigatório');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeAddress = () => {
+    Keyboard.dismiss();
+    setCityError('');
+    setStreetError('');
+
+    if (city === '') {
+      setCityError('Cidade é obrigatório');
+      return false;
+    }
+
+    if (street === '') {
+      setStreetError('Endereço/rua/avenida é obrigatório');
+      return false;
     }
 
     return true;
@@ -80,9 +188,18 @@ const Form: React.FC = () => {
         setSkipped(newSkipped);
       }
     }
-
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    if (activeStep === 1) {
+      if (validadeMoreInformation()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 2) {
+      if (validadeAddress()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
   };
 
   const handleBack = () => {
@@ -121,76 +238,68 @@ const Form: React.FC = () => {
         />
       ),
     },
-    // {
-    //   key: '2',
-    //   title: 'Informações complementares',
-    //   description:
-    //     'Para continuar, complete o seu perfil com mais algumas informações',
-    //   form: (
-    //     <CensusFormMoreInformation
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       ageGroup={ageGroup}
-    //       gender={gender}
-    //       setAgeGroup={setAgeGroup}
-    //       setGender={setGender}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '3',
-    //   title: 'Endereço',
-    //   description: 'Seu endereço não será utilizado publicamente',
-    //   form: (
-    //     <CensusFormAddress
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       city={city}
-    //       setCity={setCity}
-    //       street={street}
-    //       setStreet={setStreet}
-    //       district={district}
-    //       setDistrict={setDistrict}
-    //       county={county}
-    //       setCounty={setCounty}
-    //       number={number}
-    //       setNumber={setNumber}
-    //       region={region}
-    //       setRegion={setRegion}
-    //       zipcode={zipcode}
-    //       setZicode={setZicode}
-    //       setZone={setZone}
-    //       zone={zone}
-    //       latitude={latitude}
-    //       setLatitude={setLatitude}
-    //       longitude={longitude}
-    //       setLongitude={setLongitude}
-    //       uf={uf}
-    //       setUf={setUf}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '4',
-    //   title: 'Qual o nível escolar?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormSchool
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       schollLevel={schollLevel}
-    //       setSchoolLevel={setSchoolLevel}
-    //       religion={religion}
-    //       setReligion={setReligion}
-    //     />
-    //   ),
-    // },
+    {
+      key: '2',
+      title: 'Informações complementares',
+      description: 'Para continuar, complete suas informações',
+      form: (
+        <FormMoreInformation
+          ageGroup={ageGroup}
+          gender={gender}
+          setAgeGroup={setAgeGroup}
+          setGender={setGender}
+          ageGroupError={ageGroupError}
+        />
+      ),
+    },
+    {
+      key: '3',
+      title: 'Endereço',
+      description: 'Seu endereço não será utilizado publicamente',
+      form: (
+        <FormAddress
+          city={city}
+          setCity={setCity}
+          street={street}
+          setStreet={setStreet}
+          district={district}
+          setDistrict={setDistrict}
+          county={county}
+          setCounty={setCounty}
+          number={number}
+          setNumber={setNumber}
+          setZone={setZone}
+          zone={zone}
+          cityError={cityError}
+          streetError={streetError}
+          latitude={latitude}
+          longitude={longitude}
+          setLatitude={setLatitude}
+          setLongitude={setLongitude}
+        />
+      ),
+    },
+    {
+      key: '4',
+      title: 'Qual o nível escolar?',
+      description: '',
+      form: (
+        <FormSchool
+          schollLevel={schollLevel}
+          setSchoolLevel={setSchoolLevel}
+          religion={religion}
+          setReligion={setReligion}
+          religionError=""
+          schollError=""
+        />
+      ),
+    },
     // {
     //   key: '5',
     //   title: 'Mapeamento pós covid-19: contágio e sequelas',
     //   description: 'Possui pelo menos uma comorbidade?',
     //   form: (
-    //     <CensusFormComorbidity
+    //     <FormComorbidity
     //       handleNextForm={handleNextForm}
     //       handleBackForm={handleBackForm}
     //       comorbidity={comorbidity}
@@ -473,7 +582,7 @@ const Form: React.FC = () => {
           return;
         }
 
-        if (!isStated) {
+        if (!isStarted) {
           // If we don't have unsaved changes, then we don't need to do anything
           return;
         }
@@ -498,8 +607,12 @@ const Form: React.FC = () => {
           );
         }
       }),
-    [navigation, isStated, isFinish],
+    [navigation, isStarted, isFinish],
   );
+
+  if (!isStarted) {
+    return <FormCover onPress={() => setIsStarted(true)} />;
+  }
 
   return (
     <View

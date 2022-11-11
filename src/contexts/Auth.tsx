@@ -116,8 +116,6 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     loadStorage();
 
     const unsubscribe = NetInfo.addEventListener(state => {
-      console.log('Connection type', state.isInternetReachable);
-      console.log('Is connected?', state.isConnected);
       setIsConnected(state.isConnected);
     });
 

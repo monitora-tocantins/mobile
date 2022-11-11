@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import Shimmer from 'react-native-shimmer';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { heightPercentToDP, widthPercentToDP } from '../../libs';
@@ -32,15 +33,14 @@ const CardCase: React.FC<CardCaseProps> = ({
 
   if (loading) {
     return (
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: theme.colors.background },
-        ]}>
-        <View style={styles.iconLoad} />
-        <View style={styles.numberLoad} />
-        <View style={styles.captionLoad} />
-      </View>
+      <Shimmer>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: theme.colors.background },
+          ]}
+        />
+      </Shimmer>
     );
   }
 
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   iconLoad: {
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   numberLoad: {
     width: widthPercentToDP('18%'),
