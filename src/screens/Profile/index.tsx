@@ -29,7 +29,11 @@ const About: React.FC = () => {
         <View style={styles.header}>
           <View style={styles.wrapperLogo}>
             <View style={styles.wrapperPerfil}>
-              <UserPerfil name="user-circle" size={56} />
+              <UserPerfil
+                color={theme.colors.onPrimaryContainer}
+                name="user-circle"
+                size={56}
+              />
               <View style={styles.wrapperName}>
                 <Text style={styles.name}>{user.name}</Text>
                 {user.email && (
@@ -46,7 +50,11 @@ const About: React.FC = () => {
           <View style={styles.wrapperCard}>
             <Text style={styles.titleCard}>Conta</Text>
             <View style={styles.wrapperButto}>
-              <Ionicons name="person-outline" size={heightPercentToDP('4%')} />
+              <Ionicons
+                name="person-outline"
+                color={theme.colors.onPrimaryContainer}
+                size={heightPercentToDP('4%')}
+              />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('personalData');
@@ -55,10 +63,14 @@ const About: React.FC = () => {
               </TouchableOpacity>
             </View>
             <View style={styles.wrapperButto}>
-              <Feather name="map-pin" size={heightPercentToDP('4%')} />
+              <Feather
+                name="map-pin"
+                color={theme.colors.onPrimaryContainer}
+                size={heightPercentToDP('4%')}
+              />
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('home');
+                  navigation.navigate('adressData');
                 }}>
                 <Text style={styles.titleButto}>Endereço</Text>
               </TouchableOpacity>
@@ -69,6 +81,7 @@ const About: React.FC = () => {
             <View style={styles.wrapperButto}>
               <MaterialIcons
                 name="contact-support"
+                color={theme.colors.onPrimaryContainer}
                 size={heightPercentToDP('4%')}
               />
               <TouchableOpacity
@@ -80,6 +93,7 @@ const About: React.FC = () => {
             </View>
             <View style={styles.wrapperButto}>
               <MaterialCommunityIcons
+                color={theme.colors.onPrimaryContainer}
                 name="clipboard-text-outline"
                 size={heightPercentToDP('4%')}
               />
@@ -93,6 +107,7 @@ const About: React.FC = () => {
             <View style={styles.wrapperButto}>
               <UserAdd
                 name="person-add-outline"
+                color={theme.colors.onPrimaryContainer}
                 size={heightPercentToDP('4%')}
               />
               <TouchableOpacity

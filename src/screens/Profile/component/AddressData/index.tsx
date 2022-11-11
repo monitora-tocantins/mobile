@@ -13,24 +13,24 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { FocusAwareStatusBar } from '../../../../components/FocusAwareStatusBar';
 import Select from '../../../../components/Select';
 
-const PersonalData: React.FC = ({}) => {
+const AddressData: React.FC = ({}) => {
   const theme = useTheme();
   const { user } = useAuth();
   const [name, setName] = useState(user.name);
-  // const [cpf, setCpf] = useState(user.cpf);
+  const [cpf, setCpf] = useState(user.cpf);
   const [email, setEmail] = useState(user?.email);
   const [gender, setGender] = useState(user.gender);
 
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
-  // const [cpfError, setCpfError] = useState('');
-  // const [genderError, setGenderError] = useState('');
+  const [cpfError, setCpfError] = useState('');
+  //const [genderError, setGenderError] = useState('');
 
   async function handleSave() {
     try {
-      console.log('Salvando dados!!');
+      console.log('Editando dados!!');
     } catch (error) {
-      console.log('Erro ao salvar os dados', error);
+      console.log('Erro ao editar os dados', error);
     }
   }
 
@@ -73,10 +73,10 @@ const PersonalData: React.FC = ({}) => {
               </View>
               <View style={styles.wrapperImput}>
                 <TextInput
-                  label="Nome"
+                  label="Rua/Avenida"
                   keyboardType="name-phone-pad"
                   mode="outlined"
-                  value={name}
+                  value={''}
                   error={!!nameError}
                   onChangeText={text => {
                     setName(text);
@@ -84,28 +84,54 @@ const PersonalData: React.FC = ({}) => {
                   }}
                 />
               </View>
-              {/*<View style={styles.wrapperImput}>
-                 <TextInput
-                  label="CPF"
-                  disabled
+              <View style={styles.wrapperImput}>
+                <TextInput
+                  label="Número"
                   keyboardType="numeric"
                   mode="outlined"
-                  value={cpf}
+                  value={''}
                   error={!!cpfError}
                   onChangeText={text => {
                     setCpf(text);
                     setCpfError('');
                   }}
                 />
-</View>
-*/}
+              </View>
+
               <View style={styles.wrapperImput}>
                 <TextInput
-                  label="Email"
-                  keyboardType="email-address"
+                  label="Bairro"
                   autoCapitalize="none"
                   mode="outlined"
-                  value={email}
+                  value={''}
+                  error={!!emailError}
+                  onChangeText={text => {
+                    setEmail(text);
+                    setEmailError('');
+                  }}
+                />
+              </View>
+
+              <View style={styles.wrapperImput}>
+                <TextInput
+                  label="Distrito/Localidade"
+                  autoCapitalize="none"
+                  mode="outlined"
+                  value={''}
+                  error={!!emailError}
+                  onChangeText={text => {
+                    setEmail(text);
+                    setEmailError('');
+                  }}
+                />
+              </View>
+
+              <View style={styles.wrapperImput}>
+                <TextInput
+                  label="Cidade"
+                  autoCapitalize="none"
+                  mode="outlined"
+                  value={''}
                   error={!!emailError}
                   onChangeText={text => {
                     setEmail(text);
@@ -117,26 +143,20 @@ const PersonalData: React.FC = ({}) => {
               <View style={styles.wrapperImput}>
                 <Select
                   theme={theme}
-                  label="Sexo"
+                  label="Zona"
                   mode="outlined"
-                  placeholder="Selecione seu sexo"
                   onSelect={value => setGender(value)}
-                  value={gender}
+                  value={''}
                   items={[
                     {
                       id: '0',
-                      label: 'Masculino',
-                      value: 'Masculino',
+                      label: 'Urbana',
+                      value: 'Urbana',
                     },
                     {
                       id: '1',
-                      label: 'Feminino',
-                      value: 'Feminino',
-                    },
-                    {
-                      id: '2',
-                      label: 'Outro',
-                      value: 'Outro',
+                      label: 'Rural',
+                      value: 'Rural',
                     },
                   ]}
                 />
@@ -220,4 +240,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PersonalData;
+export default AddressData;
