@@ -22,12 +22,14 @@ import { FormContactCovid } from './components/FormContactCovid';
 import { FormDiagnosticConfirmation } from './components/FormDiagnosticConfirmation';
 import { FormDiagnosticConfirmationInterval } from './components/FormDiagnosticConfirmationInterval';
 import { FormTratamentPlace } from './components/FormTratamentPlace';
+import { FormTratamentPlaceOptions } from './components/FormTratamentPlaceOptions';
+import { FormCovidSequelae } from './components/FormCovidSequelae';
 
 const Form: React.FC = () => {
   const theme = useTheme();
   const [isFinish, setIsFinish] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(11);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
   const [name, setName] = useState('');
@@ -115,10 +117,16 @@ const Form: React.FC = () => {
   const [diagnosticMethodError, setDiagnosticMethodError] =
     useState<string>('');
   const [treatmentPlaceError, setTreatmentPlaceError] = useState<string>('');
+  const [hospitalTreatmentError, setHospitalTreatmentError] =
+    useState<string>('');
+  const [covidSequelaeError, setCovidSequelaeError] = useState<string>('');
 
   const [comorbidityOptionsNone, setComorbidityOptionsNone] = useState(false);
   const [otherComorbidityError, setOtherComorbidityError] = useState('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
+  const [covidSequelaeNone, setCovidSequelaeNone] = useState(false);
+  const [otherCovidSequelae, setOtherCovidSequelae] = useState('');
+  const [otherCovidSequelaeError, setOtherCovidSequelaeError] = useState('');
 
   const navigation = useNavigation<AppScreensProps>();
 
@@ -563,33 +571,37 @@ const Form: React.FC = () => {
         />
       ),
     },
-    // {
-    //   key: '12',
-    //   title: 'Tratamento no hospital',
-    //   description: '',
-    //   form: (
-    //     <CensusFormTratamentPlaceOptions
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       hospitalTreatment={hospitalTreatment}
-    //       setHospitalTreatment={setHospitalTreatment}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '13',
-    //   title: 'Sequelas da Covid-19',
-    //   description: '',
-    //   form: (
-    //     <CensusFormCovidSequelae
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       covidSequelae={covidSequelae}
-    //       treatmentPlace={treatmentPlace}
-    //       setCovidSequelae={setCovidSequelae}
-    //     />
-    //   ),
-    // },
+    {
+      key: '12',
+      title: 'Tratamento no hospital',
+      description: '',
+      form: (
+        <FormTratamentPlaceOptions
+          hospitalTreatment={hospitalTreatment}
+          hospitalTreatmentError={hospitalTreatmentError}
+          setHospitalTreatment={setHospitalTreatment}
+        />
+      ),
+    },
+    {
+      key: '13',
+      title: 'Sequelas da Covid-19',
+      description: '',
+      form: (
+        <FormCovidSequelae
+          covidSequelae={covidSequelae}
+          treatmentPlace={treatmentPlace}
+          covidSequelaeNone={covidSequelaeNone}
+          setOtherCovidSequelae={setOtherCovidSequelae}
+          otherCovidSequelae={otherCovidSequelae}
+          setCovidSequelaeNone={setCovidSequelaeNone}
+          covidSequelaeError={covidSequelaeError}
+          setOtherCovidSequelaeError={setOtherCovidSequelaeError}
+          otherCovidSequelaeError={otherCovidSequelaeError}
+          setCovidSequelae={setCovidSequelae}
+        />
+      ),
+    },
     // {
     //   key: '14',
     //   title:
