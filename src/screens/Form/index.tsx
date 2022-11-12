@@ -24,12 +24,14 @@ import { FormDiagnosticConfirmationInterval } from './components/FormDiagnosticC
 import { FormTratamentPlace } from './components/FormTratamentPlace';
 import { FormTratamentPlaceOptions } from './components/FormTratamentPlaceOptions';
 import { FormCovidSequelae } from './components/FormCovidSequelae';
+import { FormVaccinated } from './components/FormVaccinated';
+import { FormLostFamilyMember } from './components/FormLostFamilyMember';
 
 const Form: React.FC = () => {
   const theme = useTheme();
   const [isFinish, setIsFinish] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [activeStep, setActiveStep] = useState(11);
+  const [activeStep, setActiveStep] = useState(13);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
   const [name, setName] = useState('');
@@ -120,14 +122,14 @@ const Form: React.FC = () => {
   const [hospitalTreatmentError, setHospitalTreatmentError] =
     useState<string>('');
   const [covidSequelaeError, setCovidSequelaeError] = useState<string>('');
-
   const [comorbidityOptionsNone, setComorbidityOptionsNone] = useState(false);
   const [otherComorbidityError, setOtherComorbidityError] = useState('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
   const [covidSequelaeNone, setCovidSequelaeNone] = useState(false);
   const [otherCovidSequelae, setOtherCovidSequelae] = useState('');
   const [otherCovidSequelaeError, setOtherCovidSequelaeError] = useState('');
-
+  const [reasonNotToTakeError, setReasonNotToTakeError] = useState('');
+  const [vaccineDosesError, setVaccineDosesError] = useState<string>('');
   const navigation = useNavigation<AppScreensProps>();
 
   const validadeFormIdentification = () => {
@@ -602,38 +604,38 @@ const Form: React.FC = () => {
         />
       ),
     },
-    // {
-    //   key: '14',
-    //   title:
-    //     'Mapeamento pos covid-19: campanha x consequências socio-econômicas.',
-    //   description: 'Você está vacinado contra COVID-19?',
-    //   form: (
-    //     <CensusFormVaccinated
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       diagnosticConfirmation={diagnosticConfirmation}
-    //       vaccinated={vaccinated}
-    //       setVaccinated={setVaccinated}
-    //       reasonNotToTake={reasonNotToTake}
-    //       setReasonNotToTake={setReasonNotToTake}
-    //       vaccineDoses={vaccineDoses}
-    //       setVaccineDoses={setVaccineDoses}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '15',
-    //   title: 'Você perdeu algum familiar por conta da COVID-19?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormLostFamilyMember
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       lostFamilyMember={lostFamilyMember}
-    //       setLostFamilyMember={setLostFamilyMember}
-    //     />
-    //   ),
-    // },
+    {
+      key: '14',
+      title:
+        'Mapeamento pos covid-19: campanha x consequências socio-econômicas.',
+      description: 'Você está vacinado contra COVID-19?',
+      form: (
+        <FormVaccinated
+          diagnosticConfirmation={diagnosticConfirmation}
+          vaccinated={vaccinated}
+          setVaccinated={setVaccinated}
+          reasonNotToTake={reasonNotToTake}
+          reasonNotToTakeError={reasonNotToTakeError}
+          setReasonNotToTakeError={setReasonNotToTakeError}
+          setReasonNotToTake={setReasonNotToTake}
+          vaccineDoses={vaccineDoses}
+          setVaccineDoses={setVaccineDoses}
+          setVaccineDosesError={setVaccineDosesError}
+          vaccineDosesError={vaccineDosesError}
+        />
+      ),
+    },
+    {
+      key: '15',
+      title: 'Você perdeu algum familiar por conta da COVID-19?',
+      description: '',
+      form: (
+        <FormLostFamilyMember
+          lostFamilyMember={lostFamilyMember}
+          setLostFamilyMember={setLostFamilyMember}
+        />
+      ),
+    },
     // {
     //   key: '16',
     //   title: 'Você pegou COVID-19 após estar vacinado?',
