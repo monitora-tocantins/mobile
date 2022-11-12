@@ -6,6 +6,7 @@ import { api } from '../services/api';
 interface AuthContextData {
   isAuthenticated: boolean;
   isConnected: boolean | null;
+  isFetchingUser: boolean;
   user: UserDataProps;
   loading: boolean;
   mounted: boolean;
@@ -15,9 +16,10 @@ interface AuthContextData {
     password: string,
   ): Promise<boolean>;
   logout(): Promise<void>;
+  getUserData(): Promise<boolean>;
 }
 
-type UserDataProps = {
+export type UserDataProps = {
   id: string;
   name: string;
   email: string;
@@ -42,6 +44,7 @@ interface IAuthProvider {
 
 const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isFetchingUser, setIsFetchingUser] = useState(false);
   const [isConnected, setIsConnected] = useState<boolean | null>(false);
   const [user, setUser] = useState<UserDataProps>({} as UserDataProps);
   const [loading, setLoading] = useState(true);
@@ -57,6 +60,9 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     );
     if (dataStorage && dataStorageUser) {
       setUser(JSON.parse(dataStorageUser));
+      api.defaults.headers.common.Authorization = `Bearer ${JSON.parse(
+        dataStorage,
+      )}`;
       setIsAuthenticated(true);
       setMounted(false);
       setLoading(false);
@@ -76,6 +82,30 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     }
   };
 
+  const getUserData = async () => {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        setIsFetchingUser(true);
+        const res = await api.get('@me');
+        await AsyncStorage.setItem(
+          '@monitora_tocantins:user',
+          JSON.stringify(res.data.data),
+        );
+        setUser(res.data.data);
+        setIsFetchingUser(false);
+        resolve(true);
+      } catch (error: any) {
+        setIsFetchingUser(false);
+        console.log('Error =>', error);
+        if (error.response) {
+          reject(error.response.data.error.message);
+        } else {
+          reject('Erro ao buscar os dados do usuário');
+        }
+      }
+    });
+  };
+
   const signIn = async (
     document: string,
     documentType: 'email' | 'cpf',
@@ -89,6 +119,7 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
           document,
           password,
         });
+        api.defaults.headers.common.Authorization = `Bearer ${res.data.data.access_token}`;
         await AsyncStorage.setItem(
           '@monitora_tocantins:access_token',
           JSON.stringify(res.data.data.access_token),
@@ -135,6 +166,8 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
         signIn,
         isConnected,
         logout,
+        getUserData,
+        isFetchingUser,
       }}>
       {children}
     </AuthContext.Provider>

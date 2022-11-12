@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { heightPercentToDP } from '../../libs';
@@ -22,7 +22,7 @@ import Share from 'react-native-share';
 const About: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
   const theme = useTheme();
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading, getUserData } = useAuth();
   const onShare = async () => {
     try {
       const result = await Share.open({
@@ -39,6 +39,11 @@ const About: React.FC = () => {
       console.log('Message', error.message);
     }
   };
+
+  useEffect(() => {
+    getUserData();
+  }, [getUserData]);
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}>

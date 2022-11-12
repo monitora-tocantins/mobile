@@ -12,6 +12,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const Home = Loadable(lazy(() => import('../screens/Home')));
 const Profile = Loadable(lazy(() => import('../screens/Profile')));
 const Dashboard = Loadable(lazy(() => import('../screens/Dashboard')));
+const SyncForms = Loadable(
+  lazy(() => import('../screens/Dashboard/SyncForms')),
+);
 const Form = Loadable(lazy(() => import('../screens/Form')));
 
 const PersonalData = Loadable(
@@ -25,6 +28,7 @@ const StackNavigator = createStackNavigator();
 
 type RootStackParamList = {
   dashboard: undefined;
+  syncForms: undefined;
   form: undefined;
   profile: undefined;
   personalData: undefined;
@@ -60,7 +64,7 @@ const AppRoutes: React.FC = () => {
             <MaterialIcons
               {...props}
               name="close"
-              size={32}
+              size={24}
               color={colors.onPrimaryContainer}
               style={styles.icon}
             />
@@ -101,6 +105,27 @@ const AppRoutes: React.FC = () => {
           headerShadowVisible: false,
           headerTitleAlign: 'center',
           headerTitle: 'Dashboard - Censo 2022',
+        }}
+      />
+      <StackNavigator.Screen
+        name="syncForms"
+        component={SyncForms}
+        options={{
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+          headerLeft: ({ ...props }) => (
+            <MaterialIcons
+              {...props}
+              name="close"
+              size={24}
+              color={colors.onPrimaryContainer}
+              style={styles.icon}
+            />
+          ),
+          headerShadowVisible: false,
+          headerTitleAlign: 'center',
+          headerTitle: 'Sincronizar - Censo 2022',
         }}
       />
       <StackNavigator.Screen

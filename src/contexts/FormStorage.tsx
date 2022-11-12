@@ -109,12 +109,71 @@ export const FormStorageProvider: React.FC<IFormStorageProvider> = ({
     };
   }, [user]);
 
+  const seedFormsToTest = async () => {
+    const result5 = await saveForm({
+      uid: user.id,
+      city: 'Cametá',
+      district: 'Castanhal',
+      email: '',
+      gender: 'Masculino',
+      latitude: '',
+      longitude: '',
+      name: 'Teste 12',
+      number: '',
+      status: 'pending',
+      street: 'São benedito',
+      uf: 'PA',
+      zipcode: '68400000',
+      zone: 'Urbana',
+      cpf: '98226748720',
+      reason_not_cpf: '',
+      region: '',
+      age_group: 'até 25 anos',
+      schollLevel: 'fundamental imcompleto',
+      religion: 'Católica',
+      comorbidity: false,
+      diabetes: false,
+      heartProblem: false,
+      kidneyDisease: false,
+      thyroid: false,
+      obesity: false,
+      otherComorbidity: '',
+      affectedCovid19: false,
+      diagnosticConfirmation: false,
+      timeInterval: '',
+      diagnosticMethod: '',
+      treatmentPlace: '',
+      hospitalTreatment: '',
+      covidSequelae: '',
+      vaccinated: true,
+      vaccineDoses: 'Dose única',
+      reasonNotToTake: '',
+      lostFamilyMember: false,
+      affectedCovidAfterVaccinated: false,
+      rehabilitationSequelae: false,
+      treatmentRehabilitationSequelae: '',
+      opinionPreventionMeasures: 'Necessário',
+      covidInformation: 'Veículo televisivo e rádio',
+      maintainedFamilyIncome: true,
+      receivedSocialAssistance: true,
+      recoveredFamilyIncome: false,
+      familyInDebt: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+    console.log('Teste rodou => ', result5);
+  };
+
+  useEffect(() => {
+    // seedFormsToTest();
+  }, []);
+
   useEffect(() => {
     getStorage();
   }, [getStorage]);
 
   const saveForm = (data: StorageSchemaType): Promise<boolean> => {
-    console.log('RESPOSTAS >>', data);
+    // console.log('RESPOSTAS >>', data);
 
     return new Promise(async (resolve, reject) => {
       const realm = await getRealm();

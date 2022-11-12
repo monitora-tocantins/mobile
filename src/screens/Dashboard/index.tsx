@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -23,12 +23,16 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const { storage, loading } = useFormStorage();
+  const { storage, loading, getStorage } = useFormStorage();
   const navigation = useNavigation<AppScreensProps>();
 
   const onStateChange = (value: boolean) => setIsOpen(value);
 
   const onSelectedFilter = (value: string) => setSelectedFilter(value);
+
+  useEffect(() => {
+    getStorage();
+  }, [getStorage]);
 
   const filtered =
     selectedFilter === 'all'
@@ -59,7 +63,7 @@ const Dashboard: React.FC = () => {
               <View style={styles.filterItem}>
                 <FilterCensusForm
                   label="Todos"
-                  quantity={0}
+                  quantity={storage.length}
                   onPress={() => onSelectedFilter('all')}
                   selected={selectedFilter === 'all'}
                   type="all"
@@ -68,7 +72,7 @@ const Dashboard: React.FC = () => {
               <View style={styles.filterItem}>
                 <FilterCensusForm
                   label="Completo"
-                  quantity={0}
+                  quantity={storage.filtered('status == $0', 'complete').length}
                   onPress={() => onSelectedFilter('complete')}
                   selected={selectedFilter === 'complete'}
                   type="complete"
@@ -77,7 +81,7 @@ const Dashboard: React.FC = () => {
               <View style={styles.filterItem}>
                 <FilterCensusForm
                   label="Pendentes"
-                  quantity={0}
+                  quantity={storage.filtered('status == $0', 'pending').length}
                   onPress={() => onSelectedFilter('pending')}
                   selected={selectedFilter === 'pending'}
                   type="pending"
@@ -145,7 +149,7 @@ const Dashboard: React.FC = () => {
               icon: 'sync',
               label: 'Sincronizar formulários',
               size: 'medium',
-              onPress: () => console.log('Pressed star'),
+              onPress: () => navigation.navigate('syncForms'),
             },
           ]}
           onStateChange={({ open }) => onStateChange(open)}
