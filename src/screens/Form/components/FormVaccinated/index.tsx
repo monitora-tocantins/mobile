@@ -12,6 +12,8 @@ import Select from '../../../../components/Select';
 type Props = {
   diagnosticConfirmation: boolean | undefined;
   vaccinated: boolean | undefined;
+  setVaccinetedError: (value: string) => void;
+  vaccinetedError: string;
   setVaccinated: (value: boolean | undefined) => void;
   reasonNotToTake: string;
   setReasonNotToTake: (value: string) => void;
@@ -26,6 +28,8 @@ type Props = {
 export const FormVaccinated: React.FC<Props> = ({
   diagnosticConfirmation,
   vaccinated,
+  vaccinetedError,
+  setVaccinetedError,
   setVaccinated,
   reasonNotToTake,
   setReasonNotToTake,
@@ -50,7 +54,10 @@ export const FormVaccinated: React.FC<Props> = ({
                 onValueChange={value => {
                   if (vaccinated === true) {
                     setVaccinated(undefined);
+                    setVaccineDosesError('');
+                    setVaccinetedError('');
                   } else {
+                    setVaccinetedError('');
                     setVaccineDoses('');
                     setVaccinated(value);
                     setReasonNotToTake('');
@@ -67,7 +74,10 @@ export const FormVaccinated: React.FC<Props> = ({
                 onValueChange={value => {
                   if (vaccinated === false) {
                     setVaccinated(undefined);
+                    setVaccinetedError('');
+                    setReasonNotToTakeError('');
                   } else {
+                    setVaccinetedError('');
                     setVaccineDoses('');
                     setVaccinated(!value);
                     setReasonNotToTake('');
@@ -75,6 +85,9 @@ export const FormVaccinated: React.FC<Props> = ({
                 }}
               />
             </View>
+            <HelperText type="error" visible={!!vaccinetedError}>
+              {vaccinetedError}
+            </HelperText>
 
             <View style={styles.inputWrapper}>
               {vaccinated && (
@@ -86,6 +99,9 @@ export const FormVaccinated: React.FC<Props> = ({
                     error={!!vaccineDosesError}
                     placeholder="Selecione uma opção"
                     onSelect={value => {
+                      if (vaccineDoses !== '') {
+                        setVaccineDosesError('');
+                      }
                       setVaccineDoses(value);
                       setVaccineDosesError('');
                     }}
@@ -130,6 +146,9 @@ export const FormVaccinated: React.FC<Props> = ({
                     error={!!reasonNotToTakeError}
                     placeholder="Selecione uma opção"
                     onSelect={value => {
+                      if (reasonNotToTake !== '') {
+                        setReasonNotToTakeError('');
+                      }
                       setReasonNotToTake(value);
                       setReasonNotToTakeError('');
                     }}
@@ -189,8 +208,8 @@ export const FormVaccinated: React.FC<Props> = ({
                       },
                     ]}
                   />
-                  <HelperText type="error" visible={!!vaccineDosesError}>
-                    {vaccineDosesError}
+                  <HelperText type="error" visible={!!reasonNotToTakeError}>
+                    {reasonNotToTakeError}
                   </HelperText>
                 </>
               )}

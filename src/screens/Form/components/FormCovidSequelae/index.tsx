@@ -43,6 +43,8 @@ export const FormCovidSequelae: React.FC<Props> = ({
               <Select
                 theme={theme}
                 label="Com quais sequelas você ficou?"
+                mode="outlined"
+                error={!!covidSequelaeError}
                 onSelect={value => {
                   if (value === 'Outras') {
                     setCovidSequelaeNone(true);
@@ -50,8 +52,9 @@ export const FormCovidSequelae: React.FC<Props> = ({
                     setCovidSequelaeNone(false);
                   }
                   setCovidSequelae(value);
+                  setOtherCovidSequelae('');
                 }}
-                disabled={false}
+                // disabled={false}
                 value={covidSequelae}
                 placeholder="Selecione uma opção"
                 items={[
@@ -84,6 +87,9 @@ export const FormCovidSequelae: React.FC<Props> = ({
                   },
                 ]}
               />
+              <HelperText type="error" visible={!!covidSequelaeError}>
+                {covidSequelaeError}
+              </HelperText>
               <View style={styles.inputWrapper}>
                 {covidSequelaeNone && (
                   <>
@@ -98,8 +104,10 @@ export const FormCovidSequelae: React.FC<Props> = ({
                         setOtherCovidSequelaeError('');
                       }}
                     />
-                    <HelperText type="error" visible={!!covidSequelaeError}>
-                      {covidSequelaeError}
+                    <HelperText
+                      type="error"
+                      visible={!!otherCovidSequelaeError}>
+                      {otherCovidSequelaeError}
                     </HelperText>
                   </>
                 )}
