@@ -22,12 +22,21 @@ import { FormContactCovid } from './components/FormContactCovid';
 import { FormDiagnosticConfirmation } from './components/FormDiagnosticConfirmation';
 import { FormDiagnosticConfirmationInterval } from './components/FormDiagnosticConfirmationInterval';
 import { FormTratamentPlace } from './components/FormTratamentPlace';
+import { FormTratamentPlaceOptions } from './components/FormTratamentPlaceOptions';
+import { FormCovidSequelae } from './components/FormCovidSequelae';
+import { FormVaccinated } from './components/FormVaccinated';
+import { FormLostFamilyMember } from './components/FormLostFamilyMember';
+import { FormAffectedCovidAfterVaccinated } from './components/FormAffectedCovidAfterVaccinated';
+import { FormOpinionPreventionMeasures } from './components/FormOpinionPreventionMeasures';
+import { FormCovidInformation } from './components/FormCovidInformation';
+import { FormFamilyIncome } from './components/FormFamilyIncome';
+import { FormSummary } from './components/FormSummary';
 
 const Form: React.FC = () => {
   const theme = useTheme();
   const [isFinish, setIsFinish] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(12);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
   const [name, setName] = useState('');
@@ -115,13 +124,21 @@ const Form: React.FC = () => {
   const [diagnosticMethodError, setDiagnosticMethodError] =
     useState<string>('');
   const [treatmentPlaceError, setTreatmentPlaceError] = useState<string>('');
-
+  const [hospitalTreatmentError, setHospitalTreatmentError] =
+    useState<string>('');
+  const [covidSequelaeError, setCovidSequelaeError] = useState<string>('');
   const [comorbidityOptionsNone, setComorbidityOptionsNone] = useState(false);
   const [otherComorbidityError, setOtherComorbidityError] = useState('');
   const [toggleCheckBoxCpf, setToggleCheckBoxCpf] = useState(false);
-
+  const [covidSequelaeNone, setCovidSequelaeNone] = useState(false);
+  const [otherCovidSequelae, setOtherCovidSequelae] = useState('');
+  const [otherCovidSequelaeError, setOtherCovidSequelaeError] = useState('');
+  const [reasonNotToTakeError, setReasonNotToTakeError] = useState('');
+  const [vaccineDosesError, setVaccineDosesError] = useState<string>('');
+  const [vaccinetedError, setVaccinetedError] = useState<string>('');
   const navigation = useNavigation<AppScreensProps>();
-
+  const [rehabilitationSequelaeError, setRehabilitationSequelaeError] =
+    useState<string>('');
   const validadeFormIdentification = () => {
     Keyboard.dismiss();
     setNameError('');
@@ -288,6 +305,53 @@ const Form: React.FC = () => {
     return true;
   };
 
+  const validadeHospitalTreatment = () => {
+    Keyboard.dismiss();
+
+    if (hospitalTreatment === '') {
+      setHospitalTreatmentError('Campo obrigatório! Escolha uma opção');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeCovidSequelae = () => {
+    Keyboard.dismiss();
+
+    if (covidSequelae === '') {
+      setCovidSequelaeError('Campo obrigatório! Escolha uma opção');
+      return false;
+    }
+    if (covidSequelaeNone) {
+      if (otherCovidSequelae === '') {
+        setOtherCovidSequelaeError('É preciso descrever as outras sequelas!');
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const validadeVaccinated = () => {
+    Keyboard.dismiss();
+
+    if (vaccinated === undefined) {
+      setVaccinetedError('Você precisa selecionar uma opção.');
+      return false;
+    }
+    if (vaccineDosesError === '') {
+      setVaccineDosesError('É preciso escolher uma opção.');
+      return false;
+    }
+    if (reasonNotToTake === '') {
+      setReasonNotToTakeError('É preciso escolher uma opção.');
+      return false;
+    }
+
+    return true;
+  };
+
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
@@ -378,6 +442,25 @@ const Form: React.FC = () => {
           setActiveStep(prevActiveStep => prevActiveStep + 1);
           setSkipped(newSkipped);
         }
+      }
+    }
+    if (activeStep === 10) {
+      if (validadeHospitalTreatment()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+
+    if (activeStep === 11) {
+      if (validadeCovidSequelae()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+    if (activeStep === 12) {
+      if (validadeVaccinated()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
       }
     }
   };
@@ -563,183 +646,185 @@ const Form: React.FC = () => {
         />
       ),
     },
-    // {
-    //   key: '12',
-    //   title: 'Tratamento no hospital',
-    //   description: '',
-    //   form: (
-    //     <CensusFormTratamentPlaceOptions
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       hospitalTreatment={hospitalTreatment}
-    //       setHospitalTreatment={setHospitalTreatment}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '13',
-    //   title: 'Sequelas da Covid-19',
-    //   description: '',
-    //   form: (
-    //     <CensusFormCovidSequelae
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       covidSequelae={covidSequelae}
-    //       treatmentPlace={treatmentPlace}
-    //       setCovidSequelae={setCovidSequelae}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '14',
-    //   title:
-    //     'Mapeamento pos covid-19: campanha x consequências socio-econômicas.',
-    //   description: 'Você está vacinado contra COVID-19?',
-    //   form: (
-    //     <CensusFormVaccinated
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       diagnosticConfirmation={diagnosticConfirmation}
-    //       vaccinated={vaccinated}
-    //       setVaccinated={setVaccinated}
-    //       reasonNotToTake={reasonNotToTake}
-    //       setReasonNotToTake={setReasonNotToTake}
-    //       vaccineDoses={vaccineDoses}
-    //       setVaccineDoses={setVaccineDoses}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '15',
-    //   title: 'Você perdeu algum familiar por conta da COVID-19?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormLostFamilyMember
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       lostFamilyMember={lostFamilyMember}
-    //       setLostFamilyMember={setLostFamilyMember}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '16',
-    //   title: 'Você pegou COVID-19 após estar vacinado?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormAffectedCovidAfterVaccinated
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       affectedCovidAfterVaccinated={affectedCovidAfterVaccinated}
-    //       setAffectedCovidAfterVaccinated={setAffectedCovidAfterVaccinated}
-    //       rehabilitationSequelae={rehabilitationSequelae}
-    //       setRehabilitationSequelae={setRehabilitationSequelae}
-    //       treatmentRehabilitationSequelae={treatmentRehabilitationSequelae}
-    //       setTreatmentRehabilitationSequelae={
-    //         setTreatmentRehabilitationSequelae
-    //       }
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '17',
-    //   title:
-    //     'O que você acha das medidas de prevenção como distanciamento social, uso de máscara, álcool 70º,  etc?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormOpinionPreventionMeasures
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       opinionPreventionMeasures={opinionPreventionMeasures}
-    //       setOpinionPreventionMeasures={setOpinionPreventionMeasures}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '18',
-    //   title:
-    //     'Como você obteve as informações sobre COVID-19 (prevenção e tratamento)?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormCovidInformation
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       covidInformation={covidInformation}
-    //       setCovidInformation={setCovidInformation}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '19',
-    //   title:
-    //     'Durante a pandemia de COVID-19 sua família conseguiu manter a renda familiar?',
-    //   description: '',
-    //   form: (
-    //     <CensusFormFamilyIncome
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       maintainedFamilyIncome={maintainedFamilyIncome}
-    //       setMaintainedFamilyIncome={setMaintainedFamilyIncome}
-    //       receivedSocialAssistance={receivedSocialAssistance}
-    //       setReceivedSocialAssistance={setReceivedSocialAssistance}
-    //       recoveredFamilyIncome={recoveredFamilyIncome}
-    //       setRecoveredFamilyIncome={setRecoveredFamilyIncome}
-    //       familyInDebt={familyInDebt}
-    //       setFamilyInDebt={setFamilyInDebt}
-    //     />
-    //   ),
-    // },
-    // {
-    //   key: '20',
-    //   title: 'Resumo do questionário',
-    //   description: '',
-    //   form: (
-    //     <CensusFormSummary
-    //       handleNextForm={handleNextForm}
-    //       handleBackForm={handleBackForm}
-    //       name={name}
-    //       cpf={cpf}
-    //       email={email}
-    //       age_group={ageGroup}
-    //       gender={gender}
-    //       city={city}
-    //       street={street}
-    //       district={district}
-    //       number={number}
-    //       region={region}
-    //       zone={zone}
-    //       schollLevel={schollLevel}
-    //       religion={religion}
-    //       comorbidity={comorbidity}
-    //       diabetes={diabetes}
-    //       heartProblem={heartProblem}
-    //       kidneyDisease={kidneyDisease}
-    //       thyroid={thyroid}
-    //       obesity={obesity}
-    //       otherComorbidity={otherComorbidity}
-    //       affectedCovid19={affectedCovid19}
-    //       diagnosticConfirmation={diagnosticConfirmation}
-    //       timeInterval={timeInterval}
-    //       diagnosticMethod={diagnosticMethod}
-    //       treatmentPlace={treatmentPlace}
-    //       hospitalTreatment={hospitalTreatment}
-    //       covidSequelae={covidSequelae}
-    //       vaccinated={vaccinated}
-    //       vaccineDoses={vaccineDoses}
-    //       reasonNotToTake={reasonNotToTake}
-    //       lostFamilyMember={lostFamilyMember}
-    //       affectedCovidAfterVaccinated={affectedCovidAfterVaccinated}
-    //       rehabilitationSequelae={rehabilitationSequelae}
-    //       treatmentRehabilitationSequelae={treatmentRehabilitationSequelae}
-    //       opinionPreventionMeasures={opinionPreventionMeasures}
-    //       covidInformation={covidInformation}
-    //       maintainedFamilyIncome={maintainedFamilyIncome}
-    //       receivedSocialAssistance={receivedSocialAssistance}
-    //       recoveredFamilyIncome={recoveredFamilyIncome}
-    //       familyInDebt={familyInDebt}
-    //     />
-    //   ),
-    // },
+    {
+      key: '11',
+      title: 'Tratamento no hospital',
+      description: '',
+      form: (
+        <FormTratamentPlaceOptions
+          hospitalTreatment={hospitalTreatment}
+          hospitalTreatmentError={hospitalTreatmentError}
+          setHospitalTreatment={setHospitalTreatment}
+        />
+      ),
+    },
+    {
+      key: '12',
+      title: 'Sequelas da Covid-19',
+      description: '',
+      form: (
+        <FormCovidSequelae
+          covidSequelae={covidSequelae}
+          treatmentPlace={treatmentPlace}
+          covidSequelaeNone={covidSequelaeNone}
+          setOtherCovidSequelae={setOtherCovidSequelae}
+          otherCovidSequelae={otherCovidSequelae}
+          setCovidSequelaeNone={setCovidSequelaeNone}
+          covidSequelaeError={covidSequelaeError}
+          setOtherCovidSequelaeError={setOtherCovidSequelaeError}
+          otherCovidSequelaeError={otherCovidSequelaeError}
+          setCovidSequelae={setCovidSequelae}
+        />
+      ),
+    },
+    {
+      key: '13',
+      title:
+        'Mapeamento pos covid-19: campanha x consequências socio-econômicas.',
+      description: 'Você está vacinado contra COVID-19?',
+      form: (
+        <FormVaccinated
+          diagnosticConfirmation={diagnosticConfirmation}
+          vaccinated={vaccinated}
+          setVaccinetedError={setVaccinetedError}
+          vaccinetedError={vaccinetedError}
+          setVaccinated={setVaccinated}
+          reasonNotToTake={reasonNotToTake}
+          reasonNotToTakeError={reasonNotToTakeError}
+          setReasonNotToTakeError={setReasonNotToTakeError}
+          setReasonNotToTake={setReasonNotToTake}
+          vaccineDoses={vaccineDoses}
+          setVaccineDoses={setVaccineDoses}
+          setVaccineDosesError={setVaccineDosesError}
+          vaccineDosesError={vaccineDosesError}
+        />
+      ),
+    },
+    {
+      key: '14',
+      title: 'Você perdeu algum familiar por conta da COVID-19?',
+      description: '',
+      form: (
+        <FormLostFamilyMember
+          lostFamilyMember={lostFamilyMember}
+          setLostFamilyMember={setLostFamilyMember}
+        />
+      ),
+    },
+    {
+      key: '15',
+      title: 'Você pegou COVID-19 após estar vacinado?',
+      description: '',
+      form: (
+        <FormAffectedCovidAfterVaccinated
+          affectedCovidAfterVaccinated={affectedCovidAfterVaccinated}
+          setAffectedCovidAfterVaccinated={setAffectedCovidAfterVaccinated}
+          rehabilitationSequelae={rehabilitationSequelae}
+          setRehabilitationSequelae={setRehabilitationSequelae}
+          rehabilitationSequelaeError={rehabilitationSequelaeError}
+          setRehabilitationSequelaeError={setRehabilitationSequelaeError}
+          treatmentRehabilitationSequelae={treatmentRehabilitationSequelae}
+          setTreatmentRehabilitationSequelae={
+            setTreatmentRehabilitationSequelae
+          }
+        />
+      ),
+    },
+    {
+      key: '16',
+      title:
+        'O que você acha das medidas de prevenção como distanciamento social, uso de máscara, álcool 70º,  etc?',
+      description: '',
+      form: (
+        <FormOpinionPreventionMeasures
+          setVaccineDosesError={setVaccineDosesError}
+          vaccineDosesError={vaccineDosesError}
+          opinionPreventionMeasures={opinionPreventionMeasures}
+          setOpinionPreventionMeasures={setOpinionPreventionMeasures}
+        />
+      ),
+    },
+    {
+      key: '17',
+      title:
+        'Como você obteve as informações sobre COVID-19 (prevenção e tratamento)?',
+      description: '',
+      form: (
+        <FormCovidInformation
+          setVaccineDosesError={setVaccineDosesError}
+          vaccineDosesError={vaccineDosesError}
+          covidInformation={covidInformation}
+          setCovidInformation={setCovidInformation}
+        />
+      ),
+    },
+    {
+      key: '18',
+      title:
+        'Durante a pandemia de COVID-19 sua família conseguiu manter a renda familiar?',
+      description: '',
+      form: (
+        <FormFamilyIncome
+          maintainedFamilyIncome={maintainedFamilyIncome}
+          setMaintainedFamilyIncome={setMaintainedFamilyIncome}
+          receivedSocialAssistance={receivedSocialAssistance}
+          setReceivedSocialAssistance={setReceivedSocialAssistance}
+          recoveredFamilyIncome={recoveredFamilyIncome}
+          setRecoveredFamilyIncome={setRecoveredFamilyIncome}
+          familyInDebt={familyInDebt}
+          setFamilyInDebt={setFamilyInDebt}
+        />
+      ),
+    },
+    {
+      key: '19',
+      title: 'Resumo do questionário',
+      description: '',
+      form: (
+        <FormSummary
+          name={name}
+          cpf={cpf}
+          email={email}
+          age_group={ageGroup}
+          gender={gender}
+          city={city}
+          street={street}
+          district={district}
+          number={number}
+          region={region}
+          zone={zone}
+          schollLevel={schollLevel}
+          religion={religion}
+          comorbidity={comorbidity}
+          diabetes={diabetes}
+          heartProblem={heartProblem}
+          kidneyDisease={kidneyDisease}
+          thyroid={thyroid}
+          obesity={obesity}
+          otherComorbidity={otherComorbidity}
+          affectedCovid19={affectedCovid19}
+          diagnosticConfirmation={diagnosticConfirmation}
+          timeInterval={timeInterval}
+          diagnosticMethod={diagnosticMethod}
+          treatmentPlace={treatmentPlace}
+          hospitalTreatment={hospitalTreatment}
+          covidSequelae={covidSequelae}
+          vaccinated={vaccinated}
+          vaccineDoses={vaccineDoses}
+          reasonNotToTake={reasonNotToTake}
+          lostFamilyMember={lostFamilyMember}
+          affectedCovidAfterVaccinated={affectedCovidAfterVaccinated}
+          rehabilitationSequelae={rehabilitationSequelae}
+          treatmentRehabilitationSequelae={treatmentRehabilitationSequelae}
+          opinionPreventionMeasures={opinionPreventionMeasures}
+          covidInformation={covidInformation}
+          maintainedFamilyIncome={maintainedFamilyIncome}
+          receivedSocialAssistance={receivedSocialAssistance}
+          recoveredFamilyIncome={recoveredFamilyIncome}
+          familyInDebt={familyInDebt}
+        />
+      ),
+    },
   ];
 
   useEffect(
