@@ -39,6 +39,17 @@ const SyncForms: React.FC = () => {
   const handleSyncAllSelectedForms = async () => {
     try {
       setIsSyncing(true);
+      showMessage({
+        message: 'IoT Imuniza - Censo 2022',
+        description:
+          'Não saia ou feche o aplicativo enquanto os formulários são sincronizados',
+        type: 'info',
+        autoHide: true,
+        duration: 1000,
+        animated: true,
+        position: 'top',
+        floating: true,
+      });
       if (filtered !== undefined) {
         for (const form of filtered) {
           setCurrentSyncForm({

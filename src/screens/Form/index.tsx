@@ -31,9 +31,18 @@ import { FormOpinionPreventionMeasures } from './components/FormOpinionPreventio
 import { FormCovidInformation } from './components/FormCovidInformation';
 import { FormFamilyIncome } from './components/FormFamilyIncome';
 import { FormSummary } from './components/FormSummary';
+import { useFormStorage } from '../../contexts/FormStorage';
+import { useAuth } from '../../hooks/useAuth';
+import { api } from '../../services/api';
+import { showMessage } from 'react-native-flash-message';
 
 const Form: React.FC = () => {
   const theme = useTheme();
+  const { isConnected, user } = useAuth();
+  const { saveForm, storage, updateForm } = useFormStorage();
+
+  const [isSubmiting, setIsSubmiting] = useState(false);
+
   const [isFinish, setIsFinish] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [activeStep, setActiveStep] = useState(12);
@@ -139,6 +148,7 @@ const Form: React.FC = () => {
   const navigation = useNavigation<AppScreensProps>();
   const [rehabilitationSequelaeError, setRehabilitationSequelaeError] =
     useState<string>('');
+
   const validadeFormIdentification = () => {
     Keyboard.dismiss();
     setNameError('');
@@ -174,6 +184,7 @@ const Form: React.FC = () => {
 
     return true;
   };
+
   const validadeMoreInformation = () => {
     Keyboard.dismiss();
     setAgeGroupError('');
@@ -475,8 +486,479 @@ const Form: React.FC = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
-  const handleSubmit = () => {
-    console.log('Submit');
+  const handleSubmit = async () => {
+    setIsSubmiting(true);
+
+    if (isConnected === true) {
+      try {
+        await api.post(
+          '/user/forms',
+          {
+            user: {
+              name,
+              gender,
+              cpf,
+              type: 2,
+              email,
+            },
+            address: {
+              city,
+              street,
+              number,
+              district,
+              zipcode,
+              region,
+              uf,
+              zone,
+              latitude,
+              longitude,
+            },
+            form: {
+              age_group: ageGroup,
+              reason_not_cpf: reasonNotCpf,
+              school_level: schollLevel,
+              religion,
+              comorbidity,
+              diabetes,
+              heart_problem: heartProblem,
+              kidney_disease: kidneyDisease,
+              thyroid,
+              obesity,
+              other_comorbidity: otherComorbidity,
+              affected_covid_19: affectedCovid19,
+              diagnostic_confirmation: diagnosticConfirmation,
+              time_interval: timeInterval,
+              diagnostic_method: diagnosticMethod,
+              treatment_place: treatmentPlace,
+              hospital_treatment: hospitalTreatment,
+              covid_sequelae: covidSequelae,
+              vaccinated,
+              vaccine_doses: vaccineDoses,
+              reason_not_to_take: reasonNotToTake,
+              lost_family_member: lostFamilyMember,
+              affected_covid_after_vaccinated: affectedCovidAfterVaccinated,
+              rehabilitation_sequelae: rehabilitationSequelae,
+              treatment_rehabilitation_sequelae:
+                treatmentRehabilitationSequelae,
+              opinion_prevention_measures: opinionPreventionMeasures,
+              covid_information: covidInformation,
+              maintained_family_income: maintainedFamilyIncome,
+              received_social_assistance: receivedSocialAssistance,
+              recovered_family_income: recoveredFamilyIncome,
+              family_in_debt: familyInDebt,
+            },
+          },
+          {
+            timeout: 10000, // 10 segundos
+          },
+        );
+
+        if (cpf) {
+          const formAlreadyExists = storage.find(item => item.cpf === cpf);
+          if (formAlreadyExists !== undefined) {
+            await updateForm({
+              _id: formAlreadyExists._id,
+              uid: user.id,
+              name,
+              cpf,
+              reason_not_cpf: reasonNotCpf,
+              email,
+              age_group: ageGroup,
+              gender,
+              city,
+              street,
+              district,
+              number,
+              region,
+              zone,
+              uf,
+              zipcode,
+              latitude,
+              longitude,
+              schollLevel,
+              religion,
+              comorbidity,
+              diabetes,
+              heartProblem,
+              kidneyDisease,
+              thyroid,
+              obesity,
+              otherComorbidity,
+              affectedCovid19,
+              diagnosticConfirmation,
+              timeInterval,
+              diagnosticMethod,
+              treatmentPlace,
+              hospitalTreatment,
+              covidSequelae,
+              vaccinated,
+              vaccineDoses,
+              reasonNotToTake,
+              lostFamilyMember,
+              affectedCovidAfterVaccinated,
+              rehabilitationSequelae,
+              treatmentRehabilitationSequelae,
+              opinionPreventionMeasures,
+              covidInformation,
+              maintainedFamilyIncome,
+              receivedSocialAssistance,
+              recoveredFamilyIncome,
+              familyInDebt,
+              status: 'complete',
+              created_at: formAlreadyExists.created_at,
+              updated_at: new Date(),
+            });
+          }
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi atualizado com sucesso',
+            type: 'success',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        } else {
+          await saveForm({
+            uid: user.id,
+            name,
+            cpf,
+            email,
+            reason_not_cpf: reasonNotCpf,
+            age_group: ageGroup,
+            gender,
+            city,
+            street,
+            district,
+            number,
+            region,
+            zone,
+            uf,
+            zipcode,
+            latitude,
+            longitude,
+            schollLevel,
+            religion,
+            comorbidity,
+            diabetes,
+            heartProblem,
+            kidneyDisease,
+            thyroid,
+            obesity,
+            otherComorbidity,
+            affectedCovid19,
+            diagnosticConfirmation,
+            timeInterval,
+            diagnosticMethod,
+            treatmentPlace,
+            hospitalTreatment,
+            covidSequelae,
+            vaccinated,
+            vaccineDoses,
+            reasonNotToTake,
+            lostFamilyMember,
+            affectedCovidAfterVaccinated,
+            rehabilitationSequelae,
+            treatmentRehabilitationSequelae,
+            opinionPreventionMeasures,
+            covidInformation,
+            maintainedFamilyIncome,
+            receivedSocialAssistance,
+            recoveredFamilyIncome,
+            familyInDebt,
+            status: 'complete',
+            created_at: new Date(),
+            updated_at: new Date(),
+          });
+
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi cadastrado com sucesso',
+            type: 'success',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        }
+      } catch (error: any) {
+        const formAlreadyExists = storage.find(item => item.cpf === cpf);
+        if (formAlreadyExists !== undefined) {
+          await updateForm({
+            _id: formAlreadyExists._id,
+            uid: user.id,
+            name,
+            cpf,
+            reason_not_cpf: reasonNotCpf,
+            email,
+            age_group: ageGroup,
+            gender,
+            city,
+            street,
+            district,
+            number,
+            region,
+            zone,
+            uf,
+            zipcode,
+            latitude,
+            longitude,
+            schollLevel,
+            religion,
+            comorbidity,
+            diabetes,
+            heartProblem,
+            kidneyDisease,
+            thyroid,
+            obesity,
+            otherComorbidity,
+            affectedCovid19,
+            diagnosticConfirmation,
+            timeInterval,
+            diagnosticMethod,
+            treatmentPlace,
+            hospitalTreatment,
+            covidSequelae,
+            vaccinated,
+            vaccineDoses,
+            reasonNotToTake,
+            lostFamilyMember,
+            affectedCovidAfterVaccinated,
+            rehabilitationSequelae,
+            treatmentRehabilitationSequelae,
+            opinionPreventionMeasures,
+            covidInformation,
+            maintainedFamilyIncome,
+            receivedSocialAssistance,
+            recoveredFamilyIncome,
+            familyInDebt,
+            status: 'pending',
+            created_at: formAlreadyExists.created_at,
+            updated_at: new Date(),
+          });
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi salvo no dispositivo',
+            type: 'info',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        } else {
+          await saveForm({
+            uid: user.id,
+            name,
+            cpf,
+            email,
+            reason_not_cpf: reasonNotCpf,
+            age_group: ageGroup,
+            gender,
+            city,
+            street,
+            district,
+            number,
+            region,
+            zone,
+            uf,
+            zipcode,
+            latitude,
+            longitude,
+            schollLevel,
+            religion,
+            comorbidity,
+            diabetes,
+            heartProblem,
+            kidneyDisease,
+            thyroid,
+            obesity,
+            otherComorbidity,
+            affectedCovid19,
+            diagnosticConfirmation,
+            timeInterval,
+            diagnosticMethod,
+            treatmentPlace,
+            hospitalTreatment,
+            covidSequelae,
+            vaccinated,
+            vaccineDoses,
+            reasonNotToTake,
+            lostFamilyMember,
+            affectedCovidAfterVaccinated,
+            rehabilitationSequelae,
+            treatmentRehabilitationSequelae,
+            opinionPreventionMeasures,
+            covidInformation,
+            maintainedFamilyIncome,
+            receivedSocialAssistance,
+            recoveredFamilyIncome,
+            familyInDebt,
+            status: 'pending',
+            created_at: new Date(),
+            updated_at: new Date(),
+          });
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi salvo no dispositivo',
+            type: 'info',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        }
+      }
+    } else {
+      try {
+        // salvar o formulário offline
+        const formAlreadyExists = storage.find(item => item.cpf === cpf);
+        if (formAlreadyExists !== undefined) {
+          await updateForm({
+            _id: formAlreadyExists._id,
+            uid: user.id,
+            name,
+            cpf,
+            reason_not_cpf: reasonNotCpf,
+            email,
+            age_group: ageGroup,
+            gender,
+            city,
+            street,
+            district,
+            number,
+            region,
+            zone,
+            uf,
+            zipcode,
+            latitude,
+            longitude,
+            schollLevel,
+            religion,
+            comorbidity,
+            diabetes,
+            heartProblem,
+            kidneyDisease,
+            thyroid,
+            obesity,
+            otherComorbidity,
+            affectedCovid19,
+            diagnosticConfirmation,
+            timeInterval,
+            diagnosticMethod,
+            treatmentPlace,
+            hospitalTreatment,
+            covidSequelae,
+            vaccinated,
+            vaccineDoses,
+            reasonNotToTake,
+            lostFamilyMember,
+            affectedCovidAfterVaccinated,
+            rehabilitationSequelae,
+            treatmentRehabilitationSequelae,
+            opinionPreventionMeasures,
+            covidInformation,
+            maintainedFamilyIncome,
+            receivedSocialAssistance,
+            recoveredFamilyIncome,
+            familyInDebt,
+            status: 'pending',
+            created_at: formAlreadyExists.created_at,
+            updated_at: new Date(),
+          });
+
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi salvo no dispositivo',
+            type: 'info',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        } else {
+          await saveForm({
+            uid: user.id,
+            name,
+            cpf,
+            email,
+            reason_not_cpf: reasonNotCpf,
+            age_group: ageGroup,
+            gender,
+            city,
+            street,
+            district,
+            number,
+            region,
+            zone,
+            uf,
+            zipcode,
+            latitude,
+            longitude,
+            schollLevel,
+            religion,
+            comorbidity,
+            diabetes,
+            heartProblem,
+            kidneyDisease,
+            thyroid,
+            obesity,
+            otherComorbidity,
+            affectedCovid19,
+            diagnosticConfirmation,
+            timeInterval,
+            diagnosticMethod,
+            treatmentPlace,
+            hospitalTreatment,
+            covidSequelae,
+            vaccinated,
+            vaccineDoses,
+            reasonNotToTake,
+            lostFamilyMember,
+            affectedCovidAfterVaccinated,
+            rehabilitationSequelae,
+            treatmentRehabilitationSequelae,
+            opinionPreventionMeasures,
+            covidInformation,
+            maintainedFamilyIncome,
+            receivedSocialAssistance,
+            recoveredFamilyIncome,
+            familyInDebt,
+            status: 'pending',
+            created_at: new Date(),
+            updated_at: new Date(),
+          });
+
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: 'O formulário foi salvo no dispositivo',
+            type: 'info',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+          setIsSubmiting(false);
+          setIsFinish(true);
+        }
+      } catch (error: any) {
+        console.log('Error => ', error);
+        if (error.response) {
+          showMessage({
+            message: 'IoT Imuniza - Censo 2022',
+            description: error.response.data.error.message,
+            type: 'danger',
+            animated: true,
+            position: 'top',
+            floating: true,
+          });
+        }
+        setIsSubmiting(false);
+      }
+    }
   };
 
   const FORMS = [

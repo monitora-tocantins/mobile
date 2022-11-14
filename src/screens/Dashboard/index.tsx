@@ -17,12 +17,15 @@ import { ptBR } from 'date-fns/locale';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
 import { AppScreensProps } from '../../routes/app.routes';
+import { api } from '../../services/api';
 
 const Dashboard: React.FC = () => {
   const { colors } = useTheme();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isFetchingForms, setIsFetchingForms] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [totalSync, setTotalSync] = useState('');
   const { storage, loading, getStorage } = useFormStorage();
   const navigation = useNavigation<AppScreensProps>();
 
@@ -30,9 +33,25 @@ const Dashboard: React.FC = () => {
 
   const onSelectedFilter = (value: string) => setSelectedFilter(value);
 
+  const getFormsTotal = async () => {
+    try {
+      setIsFetchingForms(true);
+      const res = await api.get(`/user/forms?user_id=${user.id}&limit=99999`);
+      setTotalSync(res.data.data.total);
+      setIsFetchingForms(false);
+    } catch (error) {
+      setIsFetchingForms(false);
+    }
+  };
+
   useEffect(() => {
     getStorage();
   }, [getStorage]);
+
+  useEffect(() => {
+    getFormsTotal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filtered =
     selectedFilter === 'all'
@@ -46,14 +65,30 @@ const Dashboard: React.FC = () => {
         style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text
-              variant="titleLarge"
-              style={[{ color: colors.onPrimaryContainer }]}>
-              Olá,
-            </Text>
-            <Text variant="titleMedium" style={[{ color: colors.secondary }]}>
-              {user.name}
-            </Text>
+            <View>
+              <Text
+                variant="titleLarge"
+                style={[{ color: colors.onPrimaryContainer }]}>
+                Olá,
+              </Text>
+              <Text variant="titleMedium" style={[{ color: colors.secondary }]}>
+                {user.name}
+              </Text>
+            </View>
+            {!isFetchingForms && totalSync !== '' && (
+              <View>
+                <Text
+                  variant="titleMedium"
+                  style={[{ color: colors.onPrimaryContainer }]}>
+                  Total sincronizados
+                </Text>
+                <Text
+                  variant="titleMedium"
+                  style={[styles.formTitle, { color: colors.secondary }]}>
+                  {totalSync === '' ? 0 : totalSync}
+                </Text>
+              </View>
+            )}
           </View>
           <View style={styles.areaList}>
             <ScrollView
@@ -97,7 +132,7 @@ const Dashboard: React.FC = () => {
               <>
                 <ProgressBar indeterminate />
                 <Text variant="bodyLarge" style={styles.loaderTitle}>
-                  Carregando formulários
+                  Carregando formulários offline
                 </Text>
               </>
             ) : (
@@ -114,7 +149,7 @@ const Dashboard: React.FC = () => {
             )}
             {filtered.length === 0 && (
               <Text style={styles.loaderTitle} variant="bodyLarge">
-                Nenhum formulário cadastrado
+                Nenhum formulário cadastrado offline
               </Text>
             )}
           </View>
@@ -180,7 +215,10 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     marginBottom: 32,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
+  headerSection: {},
   filterTitle: {
     textAlign: 'center',
     marginBottom: 4,
@@ -209,4 +247,5 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 10,
   },
+  formTitle: { textAlign: 'center' },
 });
