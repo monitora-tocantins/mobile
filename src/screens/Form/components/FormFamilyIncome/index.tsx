@@ -5,29 +5,45 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Text } from 'react-native-paper';
+import { HelperText, Text } from 'react-native-paper';
 import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 
 type Props = {
   maintainedFamilyIncome: boolean | undefined;
   setMaintainedFamilyIncome: (value: boolean | undefined) => void;
+  setMaintainedFamilyIncomeError: (text: string) => void;
+  maintainedFamilyIncomeError: string;
   receivedSocialAssistance: boolean | undefined;
   setReceivedSocialAssistance: (value: boolean | undefined) => void;
+  receivedSocialAssistanceError: string;
+  setReceivedSocialAssistanceError: (text: string) => void;
   recoveredFamilyIncome: boolean | undefined;
   setRecoveredFamilyIncome: (value: boolean | undefined) => void;
+  recoveredFamilyIncomeError: string;
+  setRecoveredFamilyIncomeError: (text: string) => void;
   familyInDebt: boolean | undefined;
   setFamilyInDebt: (value: boolean | undefined) => void;
+  familyInDebtError: string;
+  setFamilyInDebtError: (text: string) => void;
 };
 
 export const FormFamilyIncome: React.FC<Props> = ({
   maintainedFamilyIncome,
   setMaintainedFamilyIncome,
+  setMaintainedFamilyIncomeError,
+  maintainedFamilyIncomeError,
   receivedSocialAssistance,
   setReceivedSocialAssistance,
+  receivedSocialAssistanceError,
+  setReceivedSocialAssistanceError,
   recoveredFamilyIncome,
   setRecoveredFamilyIncome,
+  recoveredFamilyIncomeError,
+  setRecoveredFamilyIncomeError,
   familyInDebt,
   setFamilyInDebt,
+  familyInDebtError,
+  setFamilyInDebtError,
 }) => {
   return (
     <>
@@ -46,6 +62,7 @@ export const FormFamilyIncome: React.FC<Props> = ({
                     setMaintainedFamilyIncome(value);
                     setRecoveredFamilyIncome(false);
                     setFamilyInDebt(false);
+                    setMaintainedFamilyIncomeError('');
                   }
                 }}
               />
@@ -60,19 +77,23 @@ export const FormFamilyIncome: React.FC<Props> = ({
                     setMaintainedFamilyIncome(undefined);
                   } else {
                     setMaintainedFamilyIncome(!value);
+                    setMaintainedFamilyIncomeError('');
                     setRecoveredFamilyIncome(undefined);
                     setFamilyInDebt(undefined);
                   }
                 }}
               />
+              <HelperText type="error" visible={!!maintainedFamilyIncomeError}>
+                {maintainedFamilyIncomeError}
+              </HelperText>
             </View>
 
+            <Text>
+              {' '}
+              Durante a pandemia de COVID-19 sua família recebeu algum tipo de
+              auxilio social?
+            </Text>
             <View style={styles.inputWrapper}>
-              <Text>
-                {' '}
-                Durante a pandemia de COVID-19 sua família recebeu algum tipo de
-                auxilio social?
-              </Text>
               <CustomInputCheck
                 title="Sim"
                 label="Sim"
@@ -82,6 +103,7 @@ export const FormFamilyIncome: React.FC<Props> = ({
                     setReceivedSocialAssistance(undefined);
                   } else {
                     setReceivedSocialAssistance(value);
+                    setReceivedSocialAssistanceError('');
                   }
                 }}
               />
@@ -96,18 +118,25 @@ export const FormFamilyIncome: React.FC<Props> = ({
                     setReceivedSocialAssistance(undefined);
                   } else {
                     setReceivedSocialAssistance(!value);
+                    setReceivedSocialAssistanceError('');
                   }
                 }}
               />
+              <HelperText
+                type="error"
+                visible={!!receivedSocialAssistanceError}>
+                {receivedSocialAssistanceError}
+              </HelperText>
             </View>
+
             <View style={styles.inputWrapper}>
               {maintainedFamilyIncome === false &&
                 receivedSocialAssistance !== undefined && (
                   <>
+                    <Text>
+                      Atualmente sua família recuperou a renda familiar?
+                    </Text>
                     <View style={styles.inputWrapper}>
-                      <Text>
-                        Atualmente sua família recuperou a renda familiar?
-                      </Text>
                       <CustomInputCheck
                         label="Sim"
                         title="Sim"
@@ -117,6 +146,8 @@ export const FormFamilyIncome: React.FC<Props> = ({
                             setRecoveredFamilyIncome(undefined);
                           } else {
                             setRecoveredFamilyIncome(value);
+                            setReceivedSocialAssistanceError('');
+                            setRecoveredFamilyIncomeError('');
                           }
                         }}
                       />
@@ -131,9 +162,16 @@ export const FormFamilyIncome: React.FC<Props> = ({
                             setRecoveredFamilyIncome(undefined);
                           } else {
                             setRecoveredFamilyIncome(!value);
+                            setReceivedSocialAssistanceError('');
+                            setRecoveredFamilyIncomeError('');
                           }
                         }}
                       />
+                      <HelperText
+                        type="error"
+                        visible={!!recoveredFamilyIncomeError}>
+                        {recoveredFamilyIncomeError}
+                      </HelperText>
                     </View>
                     <View style={styles.inputWrapper}>
                       <Text>
@@ -150,6 +188,7 @@ export const FormFamilyIncome: React.FC<Props> = ({
                               setFamilyInDebt(undefined);
                             } else {
                               setFamilyInDebt(value);
+                              setFamilyInDebtError('');
                             }
                           }}
                         />
@@ -164,9 +203,13 @@ export const FormFamilyIncome: React.FC<Props> = ({
                               setFamilyInDebt(undefined);
                             } else {
                               setFamilyInDebt(!value);
+                              setFamilyInDebtError('');
                             }
                           }}
                         />
+                        <HelperText type="error" visible={!!familyInDebtError}>
+                          {familyInDebtError}
+                        </HelperText>
                       </View>
                     </View>
                   </>

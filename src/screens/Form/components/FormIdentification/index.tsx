@@ -82,6 +82,9 @@ export const FormIdentification: React.FC<Props> = ({
                     value={maskCpf(cpf !== undefined ? cpf : '')}
                     error={!!cpfError}
                     onChangeText={text => {
+                      if (toggleCheckBoxCpf === false) {
+                        setReasonNotCpf('');
+                      }
                       setCpf(text.replace(/[^\d]+/g, ''));
                       setCpfError('');
                     }}
@@ -119,6 +122,11 @@ export const FormIdentification: React.FC<Props> = ({
                 disabled={false}
                 status={toggleCheckBoxCpf ? 'checked' : 'unchecked'}
                 onPress={() => {
+                  if (toggleCheckBoxCpf === true) {
+                    setCpf('');
+                  } else {
+                    setReasonNotCpf('');
+                  }
                   setToggleCheckBoxCpf(!toggleCheckBoxCpf);
                   setCpfError('');
                 }}
@@ -162,6 +170,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingVertical: 30,
+  },
+  textRed: {
+    color: '#FF0000',
   },
   buttons: {
     width: '100%',

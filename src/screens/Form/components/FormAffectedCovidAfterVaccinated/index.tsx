@@ -5,8 +5,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { TextInput, useTheme } from 'react-native-paper';
-import { Text } from 'react-native-svg';
+import { HelperText, TextInput, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 
 type Props = {
@@ -16,8 +16,12 @@ type Props = {
   setRehabilitationSequelae: (value: boolean | undefined) => void;
   treatmentRehabilitationSequelae: string;
   setTreatmentRehabilitationSequelae: (value: string) => void;
+  setTreatmentRehabilitationSequelaeError: (value: string) => void;
+  treatmentRehabilitationSequelaeError: string;
   setRehabilitationSequelaeError: (value: string) => void;
   rehabilitationSequelaeError: string;
+  setAffectedCovidAfterVaccinatedError: (value: string) => void;
+  affectedCovidAfterVaccinatedError: string;
 };
 
 export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
@@ -27,10 +31,15 @@ export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
   setRehabilitationSequelae,
   setTreatmentRehabilitationSequelae,
   treatmentRehabilitationSequelae,
+  setTreatmentRehabilitationSequelaeError,
+  treatmentRehabilitationSequelaeError,
   setRehabilitationSequelaeError,
   rehabilitationSequelaeError,
+  setAffectedCovidAfterVaccinatedError,
+  affectedCovidAfterVaccinatedError,
 }) => {
   const theme = useTheme();
+
   return (
     <>
       <ScrollView>
@@ -44,8 +53,11 @@ export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
                 onValueChange={value => {
                   if (affectedCovidAfterVaccinated === true) {
                     setAffectedCovidAfterVaccinated(undefined);
+                    setRehabilitationSequelaeError('');
                   } else {
+                    setAffectedCovidAfterVaccinatedError('');
                     setAffectedCovidAfterVaccinated(value);
+                    setRehabilitationSequelaeError('');
                   }
                 }}
               />
@@ -59,33 +71,39 @@ export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
                   if (affectedCovidAfterVaccinated === false) {
                     setAffectedCovidAfterVaccinated(undefined);
                   } else {
+                    setAffectedCovidAfterVaccinatedError('');
+                    setRehabilitationSequelaeError('');
                     setAffectedCovidAfterVaccinated(!value);
                   }
                 }}
               />
             </View>
-            <>
+            <HelperText
+              type="error"
+              visible={!!affectedCovidAfterVaccinatedError}>
+              {affectedCovidAfterVaccinatedError}
+            </HelperText>
+            <View style={styles.inputWrapper}>
               <Text>
                 {' '}
                 Você faz algum tratamento para reabilitação de sequelas pós
                 COVID-19?{' '}
               </Text>
-              <View style={styles.inputWrapper}>
-                <CustomInputCheck
-                  title="Sim"
-                  label="Sim"
-                  value={rehabilitationSequelae === true}
-                  onValueChange={value => {
-                    if (rehabilitationSequelae === true) {
-                      setRehabilitationSequelae(undefined);
-                    } else {
-                      setRehabilitationSequelae(value);
-                      // setReasonNotToTake('');
-                    }
-                  }}
-                />
-              </View>
-            </>
+              <CustomInputCheck
+                title="Sim"
+                label="Sim"
+                value={rehabilitationSequelae === true}
+                onValueChange={value => {
+                  if (rehabilitationSequelae === true) {
+                    setRehabilitationSequelae(undefined);
+                  } else {
+                    setRehabilitationSequelae(value);
+                    setRehabilitationSequelaeError('');
+                    setTreatmentRehabilitationSequelaeError('');
+                  }
+                }}
+              />
+            </View>
             <View style={styles.inputWrapper}>
               <CustomInputCheck
                 title="Não"
@@ -97,23 +115,32 @@ export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
                   } else {
                     setRehabilitationSequelae(!value);
                     setTreatmentRehabilitationSequelae('');
-                    // setVaccineDoses('');
+                    setRehabilitationSequelaeError('');
                   }
                 }}
               />
             </View>
+            <HelperText type="error" visible={!!rehabilitationSequelaeError}>
+              {rehabilitationSequelaeError}
+            </HelperText>
             {rehabilitationSequelae === true && (
               <>
                 <TextInput
+                  mode="outlined"
                   label="Quais tratamentos"
                   placeholder="Digite quais tratamentos"
-                  error={!!rehabilitationSequelaeError}
+                  error={!!treatmentRehabilitationSequelaeError}
                   value={treatmentRehabilitationSequelae}
                   onChangeText={text => {
                     setTreatmentRehabilitationSequelae(text);
                     setRehabilitationSequelaeError('');
                   }}
                 />
+                <HelperText
+                  type="error"
+                  visible={!!treatmentRehabilitationSequelaeError}>
+                  {treatmentRehabilitationSequelaeError}
+                </HelperText>
               </>
             )}
           </View>

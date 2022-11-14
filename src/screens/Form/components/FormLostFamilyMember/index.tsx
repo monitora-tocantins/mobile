@@ -9,12 +9,16 @@ import { HelperText } from 'react-native-paper';
 import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 
 type Props = {
+  setLostFamilyMemberError: (value: string) => void;
+  lostFamilyMemberError: string;
   lostFamilyMember: boolean | undefined;
   setLostFamilyMember: (value: boolean | undefined) => void;
 };
 
 export const FormLostFamilyMember: React.FC<Props> = ({
+  setLostFamilyMemberError,
   lostFamilyMember,
+  lostFamilyMemberError,
   setLostFamilyMember,
 }) => {
   return (
@@ -29,15 +33,14 @@ export const FormLostFamilyMember: React.FC<Props> = ({
                 value={lostFamilyMember === true}
                 onValueChange={value => {
                   if (lostFamilyMember === true) {
+                    setLostFamilyMemberError('');
                     setLostFamilyMember(undefined);
                   } else {
+                    setLostFamilyMemberError('');
                     setLostFamilyMember(value);
                   }
                 }}
               />
-              <HelperText type="error" visible={false}>
-                error
-              </HelperText>
             </View>
             <View style={styles.inputWrapper}>
               <CustomInputCheck
@@ -46,14 +49,16 @@ export const FormLostFamilyMember: React.FC<Props> = ({
                 value={lostFamilyMember === false}
                 onValueChange={value => {
                   if (lostFamilyMember === false) {
+                    setLostFamilyMemberError('');
                     setLostFamilyMember(undefined);
                   } else {
+                    setLostFamilyMemberError('');
                     setLostFamilyMember(!value);
                   }
                 }}
               />
-              <HelperText type="error" visible={false}>
-                error
+              <HelperText type="error" visible={!!lostFamilyMemberError}>
+                {lostFamilyMemberError}
               </HelperText>
             </View>
           </View>

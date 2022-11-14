@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { HelperText, useTheme } from 'react-native-paper';
 import Select from '../../../../components/Select';
 
 type Props = {
@@ -13,6 +13,8 @@ type Props = {
   vaccineDosesError: string;
   covidInformation: string;
   setCovidInformation: (value: string) => void;
+  covidInformationError: string;
+  setCovidInformationError: (value: string) => void;
 };
 
 export const FormCovidInformation: React.FC<Props> = ({
@@ -20,6 +22,8 @@ export const FormCovidInformation: React.FC<Props> = ({
   vaccineDosesError,
   covidInformation,
   setCovidInformation,
+  covidInformationError,
+  setCovidInformationError,
 }) => {
   const theme = useTheme();
   return (
@@ -36,8 +40,9 @@ export const FormCovidInformation: React.FC<Props> = ({
                   setVaccineDosesError('');
                 }}
                 disabled={false}
+                mode="outlined"
                 value={covidInformation}
-                error={!!vaccineDosesError}
+                error={!!covidInformationError}
                 placeholder="Escolha uma opção"
                 items={[
                   {
@@ -60,6 +65,9 @@ export const FormCovidInformation: React.FC<Props> = ({
                 ]}
               />
             </View>
+            <HelperText type="error" visible={!!covidInformationError}>
+              {covidInformationError}
+            </HelperText>
           </View>
         </KeyboardAvoidingView>
       </ScrollView>

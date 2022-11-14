@@ -63,7 +63,8 @@ export const CustomInputCheck: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: heightPercentToDP('5.5%'),
+    // height: heightPercentToDP('5.5%'),
+    padding: 8,
     // backgroundColor: theme.colors.secundary10,
     borderRadius: 10,
     alignItems: 'center',

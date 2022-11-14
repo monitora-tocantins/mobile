@@ -45,12 +45,13 @@ const Form: React.FC = () => {
 
   const [isFinish, setIsFinish] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [activeStep, setActiveStep] = useState(12);
+  const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   // estados do formulário
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [cpf, setCpf] = useState<string | undefined>(undefined);
+
   const [reasonNotCpf, setReasonNotCpf] = useState<string | undefined>(
     undefined,
   );
@@ -145,9 +146,34 @@ const Form: React.FC = () => {
   const [reasonNotToTakeError, setReasonNotToTakeError] = useState('');
   const [vaccineDosesError, setVaccineDosesError] = useState<string>('');
   const [vaccinetedError, setVaccinetedError] = useState<string>('');
+  const [lostFamilyMemberError, setLostFamilyMemberError] =
+    useState<string>('');
+  const [opinionPreventionMeasuresError, setOpinionPreventionMeasuresError] =
+    useState<string>('');
+  const [covidInformationError, setCovidInformationError] =
+    useState<string>('');
+
+  const [maintainedFamilyIncomeError, setMaintainedFamilyIncomeError] =
+    useState<string>('');
+  const [receivedSocialAssistanceError, setReceivedSocialAssistanceError] =
+    useState<string>('');
+  const [recoveredFamilyIncomeError, setRecoveredFamilyIncomeError] =
+    useState<string>('');
+  const [familyInDebtError, setFamilyInDebtError] = useState<string>('');
+
+  const [
+    affectedCovidAfterVaccinatedError,
+    setAffectedCovidAfterVaccinatedError,
+  ] = useState<string>('');
+
   const navigation = useNavigation<AppScreensProps>();
   const [rehabilitationSequelaeError, setRehabilitationSequelaeError] =
     useState<string>('');
+
+  const [
+    treatmentRehabilitationSequelaeError,
+    setTreatmentRehabilitationSequelaeError,
+  ] = useState<string>('');
 
   const validadeFormIdentification = () => {
     Keyboard.dismiss();
@@ -351,12 +377,99 @@ const Form: React.FC = () => {
       setVaccinetedError('Você precisa selecionar uma opção.');
       return false;
     }
-    if (vaccineDosesError === '') {
+    if (vaccinated === true && vaccineDoses === '') {
       setVaccineDosesError('É preciso escolher uma opção.');
       return false;
     }
-    if (reasonNotToTake === '') {
+    if (vaccinated === false && reasonNotToTake === '') {
       setReasonNotToTakeError('É preciso escolher uma opção.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeLostFamilyMember = () => {
+    Keyboard.dismiss();
+
+    if (lostFamilyMember === undefined) {
+      setLostFamilyMemberError('Você precisa escolher uma opção.');
+      return false;
+    }
+    return true;
+  };
+
+  const validadeAffectedCovidAfterVaccinated = () => {
+    Keyboard.dismiss();
+
+    if (affectedCovidAfterVaccinated === undefined) {
+      setAffectedCovidAfterVaccinatedError(
+        'Você precisa selecionar uma opção.',
+      );
+      return false;
+    }
+    if (
+      (affectedCovidAfterVaccinated === true ||
+        affectedCovidAfterVaccinated === false) &&
+      rehabilitationSequelae === undefined
+    ) {
+      setRehabilitationSequelaeError('É preciso escolher uma opção.');
+      return false;
+    }
+    if (
+      (affectedCovidAfterVaccinated === true ||
+        affectedCovidAfterVaccinated === false) &&
+      rehabilitationSequelae === true &&
+      treatmentRehabilitationSequelae === ''
+    ) {
+      setTreatmentRehabilitationSequelaeError(
+        'É preciso descrever os tratamentos feitos.',
+      );
+      return false;
+    }
+
+    return true;
+  };
+
+  const validadeOpinionPreventionMeasures = () => {
+    Keyboard.dismiss();
+
+    if (opinionPreventionMeasures === '') {
+      setOpinionPreventionMeasuresError('Você precisa escolher uma opção.');
+      return false;
+    }
+    return true;
+  };
+
+  const validadeCovidInformation = () => {
+    Keyboard.dismiss();
+
+    if (covidInformation === '') {
+      setCovidInformationError('Você precisa escolher uma opção.');
+      return false;
+    }
+    return true;
+  };
+
+  const validadeFamilyIncome = () => {
+    Keyboard.dismiss();
+
+    if (maintainedFamilyIncome === undefined) {
+      setMaintainedFamilyIncomeError('Você precisa selecionar uma opção.');
+      return false;
+    }
+    if (receivedSocialAssistance === undefined) {
+      setReceivedSocialAssistanceError('Você precisa selecionar uma opção.');
+      return false;
+    }
+
+    if (recoveredFamilyIncome === undefined) {
+      setRecoveredFamilyIncomeError('Você precisa selecionar uma opção.');
+      return false;
+    }
+
+    if (familyInDebt === undefined) {
+      setFamilyInDebtError('Você precisa selecionar uma opção.');
       return false;
     }
 
@@ -411,6 +524,13 @@ const Form: React.FC = () => {
           setSkipped(newSkipped);
         } else if (comorbidity === false) {
           setSkipped(newSkipped);
+          setDiabetes(false);
+          setKidneyDisease(false);
+          setHeartProblem(false);
+          setObesity(false);
+          setThyroid(false);
+          setComorbidityOptionsNone(false);
+          setOtherComorbidity('');
           setActiveStep(prevActiveStep => prevActiveStep + 2);
         }
       }
@@ -433,6 +553,13 @@ const Form: React.FC = () => {
           setActiveStep(prevActiveStep => prevActiveStep + 1);
           setSkipped(newSkipped);
         } else {
+          setTimeInterval('');
+          setDiagnosticMethod('');
+          setTreatmentPlace('');
+          setHospitalTreatment('');
+          setOtherCovidSequelae('');
+          setCovidSequelae('');
+          setCovidSequelaeNone(false);
           setSkipped(newSkipped);
           setActiveStep(12);
         }
@@ -474,11 +601,60 @@ const Form: React.FC = () => {
         setSkipped(newSkipped);
       }
     }
+
+    if (activeStep === 13) {
+      if (validadeLostFamilyMember()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+
+    if (activeStep === 14) {
+      if (validadeAffectedCovidAfterVaccinated()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+
+    if (activeStep === 15) {
+      if (validadeOpinionPreventionMeasures()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+
+    if (activeStep === 16) {
+      if (validadeCovidInformation()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
+
+    if (activeStep === 17) {
+      if (validadeFamilyIncome()) {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        setSkipped(newSkipped);
+      }
+    }
   };
 
   const handleBack = () => {
     if (activeStep === 6) {
       if (comorbidity === true) {
+        return setActiveStep(prevActiveStep => prevActiveStep - 1);
+      }
+      return setActiveStep(prevActiveStep => prevActiveStep - 2);
+    }
+
+    if (activeStep === 12) {
+      if (diagnosticConfirmation === true) {
+        return setActiveStep(prevActiveStep => prevActiveStep - 1);
+      }
+      return setActiveStep(prevActiveStep => prevActiveStep - 5);
+    }
+
+    if (activeStep === 11) {
+      if (treatmentPlace !== 'Casa') {
         return setActiveStep(prevActiveStep => prevActiveStep - 1);
       }
       return setActiveStep(prevActiveStep => prevActiveStep - 2);
@@ -1188,6 +1364,8 @@ const Form: React.FC = () => {
       description: '',
       form: (
         <FormLostFamilyMember
+          setLostFamilyMemberError={setLostFamilyMemberError}
+          lostFamilyMemberError={lostFamilyMemberError}
           lostFamilyMember={lostFamilyMember}
           setLostFamilyMember={setLostFamilyMember}
         />
@@ -1199,7 +1377,17 @@ const Form: React.FC = () => {
       description: '',
       form: (
         <FormAffectedCovidAfterVaccinated
+          setAffectedCovidAfterVaccinatedError={
+            setAffectedCovidAfterVaccinatedError
+          }
+          affectedCovidAfterVaccinatedError={affectedCovidAfterVaccinatedError}
           affectedCovidAfterVaccinated={affectedCovidAfterVaccinated}
+          treatmentRehabilitationSequelaeError={
+            treatmentRehabilitationSequelaeError
+          }
+          setTreatmentRehabilitationSequelaeError={
+            setTreatmentRehabilitationSequelaeError
+          }
           setAffectedCovidAfterVaccinated={setAffectedCovidAfterVaccinated}
           rehabilitationSequelae={rehabilitationSequelae}
           setRehabilitationSequelae={setRehabilitationSequelae}
@@ -1219,8 +1407,8 @@ const Form: React.FC = () => {
       description: '',
       form: (
         <FormOpinionPreventionMeasures
-          setVaccineDosesError={setVaccineDosesError}
-          vaccineDosesError={vaccineDosesError}
+          setOpinionPreventionMeasuresError={setOpinionPreventionMeasuresError}
+          opinionPreventionMeasuresError={opinionPreventionMeasuresError}
           opinionPreventionMeasures={opinionPreventionMeasures}
           setOpinionPreventionMeasures={setOpinionPreventionMeasures}
         />
@@ -1233,6 +1421,8 @@ const Form: React.FC = () => {
       description: '',
       form: (
         <FormCovidInformation
+          covidInformationError={covidInformationError}
+          setCovidInformationError={setCovidInformationError}
           setVaccineDosesError={setVaccineDosesError}
           vaccineDosesError={vaccineDosesError}
           covidInformation={covidInformation}
@@ -1249,12 +1439,20 @@ const Form: React.FC = () => {
         <FormFamilyIncome
           maintainedFamilyIncome={maintainedFamilyIncome}
           setMaintainedFamilyIncome={setMaintainedFamilyIncome}
+          maintainedFamilyIncomeError={maintainedFamilyIncomeError}
+          setMaintainedFamilyIncomeError={setMaintainedFamilyIncomeError}
           receivedSocialAssistance={receivedSocialAssistance}
           setReceivedSocialAssistance={setReceivedSocialAssistance}
+          receivedSocialAssistanceError={receivedSocialAssistanceError}
+          setReceivedSocialAssistanceError={setReceivedSocialAssistanceError}
           recoveredFamilyIncome={recoveredFamilyIncome}
           setRecoveredFamilyIncome={setRecoveredFamilyIncome}
+          recoveredFamilyIncomeError={recoveredFamilyIncomeError}
+          setRecoveredFamilyIncomeError={setRecoveredFamilyIncomeError}
           familyInDebt={familyInDebt}
           setFamilyInDebt={setFamilyInDebt}
+          familyInDebtError={familyInDebtError}
+          setFamilyInDebtError={setFamilyInDebtError}
         />
       ),
     },
@@ -1266,6 +1464,8 @@ const Form: React.FC = () => {
         <FormSummary
           name={name}
           cpf={cpf}
+          reasonNotCpf={reasonNotCpf}
+          toggleCheckBoxCpf={toggleCheckBoxCpf}
           email={email}
           age_group={ageGroup}
           gender={gender}
