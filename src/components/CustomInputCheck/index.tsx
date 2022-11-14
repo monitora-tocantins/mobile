@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     // height: heightPercentToDP('5.5%'),
-    padding: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
     // backgroundColor: theme.colors.secundary10,
     borderRadius: 10,
     alignItems: 'center',

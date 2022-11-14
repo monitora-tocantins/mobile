@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   Alert,
+  Dimensions,
   Keyboard,
   StatusBar,
   StyleSheet,
@@ -35,11 +36,16 @@ import { useFormStorage } from '../../contexts/FormStorage';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { showMessage } from 'react-native-flash-message';
+import { Modalize } from 'react-native-modalize';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Form: React.FC = () => {
   const theme = useTheme();
   const { isConnected, user } = useAuth();
   const { saveForm, storage, updateForm } = useFormStorage();
+  const { height: initialHeight } = Dimensions.get('window');
+  const [height, setHeight] = useState(initialHeight);
 
   const [isSubmiting, setIsSubmiting] = useState(false);
 
@@ -795,6 +801,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         } else {
           await saveForm({
             uid: user.id,
@@ -858,6 +865,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         }
       } catch (error: any) {
         const formAlreadyExists = storage.find(item => item.cpf === cpf);
@@ -924,6 +932,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         } else {
           await saveForm({
             uid: user.id,
@@ -986,6 +995,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         }
       }
     } else {
@@ -1056,6 +1066,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         } else {
           await saveForm({
             uid: user.id,
@@ -1119,6 +1130,7 @@ const Form: React.FC = () => {
           });
           setIsSubmiting(false);
           setIsFinish(true);
+          onOpen();
         }
       } catch (error: any) {
         console.log('Error => ', error);
@@ -1509,6 +1521,19 @@ const Form: React.FC = () => {
     },
   ];
 
+  const handleLayout = ({ layout }: any) => {
+    setHeight(layout.height);
+  };
+
+  const modalizeRef = useRef<Modalize>(null);
+
+  const onOpen = () => {
+    modalizeRef.current?.open();
+  };
+  const onClose = () => {
+    modalizeRef.current?.close();
+  };
+
   useEffect(
     () =>
       navigation.addListener('beforeRemove', e => {
@@ -1549,47 +1574,96 @@ const Form: React.FC = () => {
   }
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <StatusBar
-        animated
-        barStyle="dark-content"
-        backgroundColor={theme.colors.background}
-      />
+    <>
+      <Modalize ref={modalizeRef} onLayout={handleLayout}>
+        <View style={[styles.centeredView, { height: height }]}>
+          <View
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 48,
+            }}>
+            <MaterialCommunityIcons
+              name="clipboard-check-outline"
+              size={48}
+              color={theme.colors.primary}
+            />
+            <Text
+              style={{
+                fontSize: 24,
+                color: theme.colors.onPrimaryContainer,
+              }}>
+              Questionário finalizado
+            </Text>
+          </View>
+          <View style={styles.buttons}>
+            <Button
+              mode="contained-tonal"
+              onPress={() => {
+                onClose();
+                navigation.navigate('dashboard');
+              }}>
+              Voltar ao dashboard
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => {
+                setIsStarted(false);
+                onClose();
+                navigation.navigate('form');
+              }}>
+              Novo questionário
+            </Button>
+          </View>
+        </View>
+      </Modalize>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: theme.colors.background },
+        ]}>
+        <StatusBar
+          animated
+          barStyle="dark-content"
+          backgroundColor={theme.colors.background}
+        />
 
-      <View style={styles.header}>
-        <Text
-          variant="titleLarge"
-          style={[styles.title, { color: theme.colors.onPrimaryContainer }]}>
-          {FORMS[activeStep].title}
-        </Text>
-        <Text
-          variant="bodyLarge"
-          style={[{ color: theme.colors.onPrimaryContainer }]}>
-          {FORMS[activeStep].description}
-        </Text>
+        <View style={styles.header}>
+          <Text
+            variant="titleLarge"
+            style={[styles.title, { color: theme.colors.onPrimaryContainer }]}>
+            {FORMS[activeStep].title}
+          </Text>
+          <Text
+            variant="bodyLarge"
+            style={[{ color: theme.colors.onPrimaryContainer }]}>
+            {FORMS[activeStep].description}
+          </Text>
+        </View>
+        {FORMS[activeStep].form}
+        <View style={styles.stepWrapper}>
+          <Button
+            onPress={() => handleBack()}
+            contentStyle={styles.button}
+            disabled={activeStep === 0 || isSubmiting}
+            mode="contained-tonal">
+            Anterior
+          </Button>
+          {/* <ProgressBar progress={(activeStep + 1) / 10} /> */}
+          <Text variant="titleLarge">
+            {activeStep + 1} / {FORMS.length}
+          </Text>
+          <Button
+            onPress={() => handleNext()}
+            contentStyle={styles.button}
+            disabled={isSubmiting}
+            mode="contained">
+            {activeStep === FORMS.length - 1 ? 'Finalizar' : 'Próxima'}
+          </Button>
+        </View>
       </View>
-      {FORMS[activeStep].form}
-      <View style={styles.stepWrapper}>
-        <Button
-          onPress={() => handleBack()}
-          contentStyle={styles.button}
-          disabled={activeStep === 0}
-          mode="contained-tonal">
-          Anterior
-        </Button>
-        {/* <ProgressBar progress={(activeStep + 1) / 10} /> */}
-        <Text variant="titleLarge">
-          {activeStep + 1} / {FORMS.length}
-        </Text>
-        <Button
-          onPress={() => handleNext()}
-          contentStyle={styles.button}
-          mode="contained">
-          {activeStep === FORMS.length - 1 ? 'Finalizar' : 'Próximo'}
-        </Button>
-      </View>
-    </View>
+    </>
   );
 };
 

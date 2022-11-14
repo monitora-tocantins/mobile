@@ -77,18 +77,18 @@ export const FormAffectedCovidAfterVaccinated: React.FC<Props> = ({
                   }
                 }}
               />
+              <HelperText
+                type="error"
+                visible={!!affectedCovidAfterVaccinatedError}>
+                {affectedCovidAfterVaccinatedError}
+              </HelperText>
             </View>
-            <HelperText
-              type="error"
-              visible={!!affectedCovidAfterVaccinatedError}>
-              {affectedCovidAfterVaccinatedError}
-            </HelperText>
+            <Text variant="bodyLarge">
+              {' '}
+              Você faz algum tratamento para reabilitação de sequelas pós
+              COVID-19?{' '}
+            </Text>
             <View style={styles.inputWrapper}>
-              <Text>
-                {' '}
-                Você faz algum tratamento para reabilitação de sequelas pós
-                COVID-19?{' '}
-              </Text>
               <CustomInputCheck
                 title="Sim"
                 label="Sim"

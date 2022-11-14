@@ -88,7 +88,7 @@ export const FormFamilyIncome: React.FC<Props> = ({
               </HelperText>
             </View>
 
-            <Text>
+            <Text variant="bodyLarge">
               {' '}
               Durante a pandemia de COVID-19 sua família recebeu algum tipo de
               auxilio social?

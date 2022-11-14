@@ -4,10 +4,9 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Text,
   //ToastAndroid,
 } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 //import { CensusFormAffectedCovidAfterVaccinated } from '../CensusFormAffectedCovidAfterVaccinated';
 //import { CensusFormLostFamilyMember } from '../CensusFormLostFamilyMember';
