@@ -50,7 +50,7 @@ export const FormCover: React.FC<IFormCover> = ({ onPress }) => {
         </Text>
         <Text
           variant="bodyLarge"
-          style={{ color: theme.colors.onPrimaryContainer }}>
+          style={[styles.conteudo, { color: theme.colors.onPrimaryContainer }]}>
           Objetivo Geral: mapear no pos covid-19 como a sociedade está vivendo
           neste cenário; gerenciar as sequelas; analisar o impacto social,
           econômico e cultural das famílias.
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 16,
-    paddingVertical: 25,
+    paddingVertical: 5,
   },
   viewText: {
     width: '100%',
@@ -432,16 +432,23 @@ const styles = StyleSheet.create({
   check: {
     flexDirection: 'row',
     marginBottom: 8,
+    margin: '0%',
     alignItems: 'flex-start',
+    maxWidth: '100%',
   },
   title: {
     fontWeight: '800',
     marginBottom: 5,
   },
+  conteudo: {
+    textAlign: 'justify',
+    marginBottom: '2%',
+  },
   textCheck: {
+    textAlign: 'justify',
     marginLeft: 8,
-    textAlign: 'left',
-    maxWidth: '95%',
+    // textAlign: 'left',
+    maxWidth: '85%',
   },
   bold: { fontWeight: '800' },
   centeredView: {
@@ -459,6 +466,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   text: {
+    textAlign: 'justify',
     fontSize: 16,
     marginBottom: 16,
   },
@@ -467,6 +475,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
+    margin: '1%',
     height: 46,
   },
 });

@@ -54,13 +54,11 @@ export const FormVaccinated: React.FC<Props> = ({
                 onValueChange={value => {
                   if (vaccinated === true) {
                     setVaccinated(undefined);
-                    setVaccineDosesError('');
-                    setVaccinetedError('');
                   } else {
                     setVaccinetedError('');
-                    setVaccineDoses('');
-                    setVaccinated(value);
+                    setVaccineDosesError('');
                     setReasonNotToTake('');
+                    setVaccinated(value);
                   }
                 }}
               />
@@ -74,13 +72,12 @@ export const FormVaccinated: React.FC<Props> = ({
                 onValueChange={value => {
                   if (vaccinated === false) {
                     setVaccinated(undefined);
-                    setVaccinetedError('');
-                    setReasonNotToTakeError('');
-                  } else {
-                    setVaccinetedError('');
-                    setVaccineDoses('');
-                    setVaccinated(!value);
                     setReasonNotToTake('');
+                  } else {
+                    setReasonNotToTakeError('');
+                    setVaccineDoses('');
+                    setVaccinetedError('');
+                    setVaccinated(!value);
                   }
                 }}
               />
@@ -99,7 +96,7 @@ export const FormVaccinated: React.FC<Props> = ({
                     error={!!vaccineDosesError}
                     placeholder="Selecione uma opção"
                     onSelect={value => {
-                      if (vaccineDoses !== '') {
+                      if (vaccinated === true && vaccineDoses === '') {
                         setVaccineDosesError('');
                       }
                       setVaccineDoses(value);
@@ -146,11 +143,11 @@ export const FormVaccinated: React.FC<Props> = ({
                     error={!!reasonNotToTakeError}
                     placeholder="Selecione uma opção"
                     onSelect={value => {
-                      if (reasonNotToTake !== '') {
+                      if (vaccinated === false && reasonNotToTake === '') {
                         setReasonNotToTakeError('');
                       }
                       setReasonNotToTake(value);
-                      setReasonNotToTakeError('');
+                      //setReasonNotToTakeError('');
                     }}
                     value={reasonNotToTake}
                     items={[

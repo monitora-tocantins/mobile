@@ -5,19 +5,19 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { HelperText, TextInput, useTheme } from 'react-native-paper';
+import { HelperText, useTheme } from 'react-native-paper';
 import Select from '../../../../components/Select';
 
 type Props = {
-  setVaccineDosesError: (text: string) => void;
-  vaccineDosesError: string;
+  setOpinionPreventionMeasuresError: (text: string) => void;
+  opinionPreventionMeasuresError: string;
   setOpinionPreventionMeasures: (value: string) => void;
   opinionPreventionMeasures: string;
 };
 
 export const FormOpinionPreventionMeasures: React.FC<Props> = ({
-  setVaccineDosesError,
-  vaccineDosesError,
+  setOpinionPreventionMeasuresError,
+  opinionPreventionMeasuresError,
   setOpinionPreventionMeasures,
   opinionPreventionMeasures,
 }) => {
@@ -30,14 +30,15 @@ export const FormOpinionPreventionMeasures: React.FC<Props> = ({
             <View style={styles.inputWrapper}>
               <Select
                 theme={theme}
+                mode="outlined"
                 label="Selecione uma opção"
                 onSelect={value => {
                   setOpinionPreventionMeasures(value);
-                  setVaccineDosesError('');
+                  setOpinionPreventionMeasuresError('');
                 }}
                 disabled={false}
                 value={opinionPreventionMeasures}
-                error={!!vaccineDosesError}
+                error={!!opinionPreventionMeasuresError}
                 placeholder="Escolha uma opção"
                 items={[
                   {
@@ -58,6 +59,9 @@ export const FormOpinionPreventionMeasures: React.FC<Props> = ({
                 ]}
               />
             </View>
+            <HelperText type="error" visible={!!opinionPreventionMeasuresError}>
+              {opinionPreventionMeasuresError}
+            </HelperText>
           </View>
         </KeyboardAvoidingView>
       </ScrollView>

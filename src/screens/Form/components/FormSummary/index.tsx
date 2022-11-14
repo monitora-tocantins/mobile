@@ -7,6 +7,7 @@ import {
   Text,
   //ToastAndroid,
 } from 'react-native';
+import { Button } from 'react-native-paper';
 import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 //import { CensusFormAffectedCovidAfterVaccinated } from '../CensusFormAffectedCovidAfterVaccinated';
 //import { CensusFormLostFamilyMember } from '../CensusFormLostFamilyMember';
@@ -15,6 +16,8 @@ import { CustomInputCheck } from '../../../../components/CustomInputCheck';
 type Props = {
   name: string;
   cpf?: string;
+  reasonNotCpf?: string;
+  toggleCheckBoxCpf: boolean;
   age_group: string;
   email: string;
   gender: string;
@@ -59,6 +62,8 @@ export const FormStorageContext = createContext<Props>({} as Props);
 export const FormSummary: React.FC<Props> = ({
   name,
   cpf,
+  reasonNotCpf,
+  toggleCheckBoxCpf,
   age_group,
   email,
   gender,
@@ -116,17 +121,31 @@ export const FormSummary: React.FC<Props> = ({
                 disabled
               />
             )}
-            <Text style={styles.text}>CPF:</Text>
-            {cpf === '' ? (
-              <Text style={styles.textNo}>CPF de usuário não informado</Text>
+            {/* <Text style={styles.text}>CPF:</Text> */}
+            {toggleCheckBoxCpf === true ? (
+              <>
+                <Text style={styles.text}>CPF de usuário não informado</Text>
+                <CustomInputCheck
+                  onValueChange={() => {}}
+                  title={
+                    reasonNotCpf !== undefined ? reasonNotCpf : ''.toUpperCase()
+                  }
+                  label="Sim"
+                  value={true}
+                  disabled
+                />
+              </>
             ) : (
-              <CustomInputCheck
-                onValueChange={() => {}}
-                title={cpf !== undefined ? cpf : ''}
-                label="Sim"
-                value={true}
-                disabled
-              />
+              <>
+                <Text style={styles.text}>CPF:</Text>
+                <CustomInputCheck
+                  onValueChange={() => {}}
+                  title={cpf !== undefined ? cpf : ''}
+                  label="Sim"
+                  value={true}
+                  disabled
+                />
+              </>
             )}
             <Text style={styles.text}>Grupo de idade: </Text>
             {age_group === '' ? (
@@ -239,7 +258,7 @@ export const FormSummary: React.FC<Props> = ({
             )}
             <Text style={styles.text}>Nível escolar: </Text>
             {schollLevel === '' ? (
-              <Text style={styles.textNo}>Não informada</Text>
+              <Text style={styles.textNo}>Não informado</Text>
             ) : (
               <CustomInputCheck
                 onValueChange={() => {}}
@@ -359,25 +378,35 @@ export const FormSummary: React.FC<Props> = ({
             {affectedCovid19 === false ? (
               <Text style={styles.textNo}>Não Contraiu o COVID-19</Text>
             ) : (
-              <CustomInputCheck
-                onValueChange={() => {}}
-                title={'Sim, foi afetado pelo COVID-19'.toUpperCase()}
-                label="Sim"
-                value={true}
-                disabled
-              />
+              <>
+                {affectedCovid19 === true && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={'Sim, foi afetado pelo COVID-19'.toUpperCase()}
+                    label="Sim"
+                    value={true}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}>Não informou</Text>
+              </>
             )}
             <Text style={styles.text}>Confirmação do diagnostico:</Text>
             {diagnosticConfirmation === false ? (
               <Text style={styles.textNo}>Não obteve confirmação</Text>
             ) : (
-              <CustomInputCheck
-                onValueChange={() => {}}
-                title={'Sim, obteve confirmação'.toUpperCase()}
-                label="Sim"
-                value={true}
-                disabled
-              />
+              <>
+                {diagnosticConfirmation === true && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={'Sim, obteve confirmação'.toUpperCase()}
+                    label="Sim"
+                    value={true}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}>Não informou diagnostico</Text>
+              </>
             )}
             <Text style={styles.text}>
               Método utilizado para obter confirmação do COVID-19:{' '}
@@ -458,23 +487,29 @@ export const FormSummary: React.FC<Props> = ({
             </Text>
             {vaccinated === true ? (
               <>
-                <CustomInputCheck
-                  onValueChange={() => {}}
-                  title={vaccineDoses.toUpperCase()}
-                  label="Sim"
-                  value={vaccineDoses !== '' ? true : false}
-                  disabled
-                />
+                {vaccinated === true && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={vaccineDoses.toUpperCase()}
+                    label="Sim"
+                    value={vaccineDoses !== '' ? true : false}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}> 1 Não informou</Text>
               </>
             ) : (
               <>
-                <CustomInputCheck
-                  onValueChange={() => {}}
-                  title={reasonNotToTake.toUpperCase()}
-                  label="Sim"
-                  value={reasonNotToTake !== '' ? true : false}
-                  disabled
-                />
+                {vaccinated === false && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={reasonNotToTake.toUpperCase()}
+                    label="Sim"
+                    value={reasonNotToTake !== '' ? true : false}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}> Não informou</Text>
               </>
             )}
             <Text style={styles.text}>
@@ -483,29 +518,37 @@ export const FormSummary: React.FC<Props> = ({
             {lostFamilyMember === false ? (
               <Text style={styles.textNo}>Não</Text>
             ) : (
-              <CustomInputCheck
-                onValueChange={() => {}}
-                title={'Sim'.toUpperCase()}
-                label="Sim"
-                value={true}
-                disabled
-              />
+              <>
+                {lostFamilyMember && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={'Sim'.toUpperCase()}
+                    label="Sim"
+                    value={lostFamilyMember === true ? true : false}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}>Não informou</Text>
+              </>
             )}
 
             <Text style={styles.text}>
-              O entrvistado pegou COVID-19 após estar vacinado:{' '}
+              O entrevistado pegou COVID-19 após estar vacinado:{' '}
             </Text>
             {affectedCovidAfterVaccinated === false ? (
               <Text style={styles.textNo}>Não</Text>
             ) : (
               <>
-                <CustomInputCheck
-                  onValueChange={() => {}}
-                  title={'Sim'.toUpperCase()}
-                  label="Sim"
-                  value={affectedCovidAfterVaccinated === true ? true : false}
-                  disabled
-                />
+                {affectedCovidAfterVaccinated && (
+                  <CustomInputCheck
+                    onValueChange={() => {}}
+                    title={'Sim'.toUpperCase()}
+                    label="Sim"
+                    value={affectedCovidAfterVaccinated === true ? true : false}
+                    disabled
+                  />
+                )}
+                <Text style={styles.textNo}>Não informou</Text>
               </>
             )}
             <Text style={styles.text}>
@@ -525,26 +568,32 @@ export const FormSummary: React.FC<Props> = ({
             <Text style={styles.text}>
               O que o entrevistado acha sobre as medidas de prevenção:
             </Text>
-
-            <CustomInputCheck
-              onValueChange={() => {}}
-              title={opinionPreventionMeasures.toUpperCase()}
-              label="Sim"
-              value={true}
-              disabled
-            />
+            {opinionPreventionMeasures !== '' ? (
+              <CustomInputCheck
+                onValueChange={() => {}}
+                title={opinionPreventionMeasures.toUpperCase()}
+                label="Sim"
+                value={true}
+                disabled
+              />
+            ) : (
+              <Text style={styles.textNo}>Não informou</Text>
+            )}
             <Text style={styles.text}>
               Como o entrevistado obteve informações de (prevenção e
               tratamento):
             </Text>
-
-            <CustomInputCheck
-              onValueChange={() => {}}
-              title={covidInformation.toUpperCase()}
-              label="Sim"
-              value={true}
-              disabled
-            />
+            {covidInformation !== '' ? (
+              <CustomInputCheck
+                onValueChange={() => {}}
+                title={covidInformation.toUpperCase()}
+                label="Sim"
+                value={true}
+                disabled
+              />
+            ) : (
+              <Text style={styles.textNo}>Não informou</Text>
+            )}
 
             <Text style={styles.text}>
               O entrevistado conseguiu manter a renda familiar durante a
@@ -638,18 +687,6 @@ export const FormSummary: React.FC<Props> = ({
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-      <View style={styles.buttons}>
-        <BackButton
-          title="Pergunta anterior"
-          onPress={() => handleBackForm(18)}
-        />
-        <NextButton
-          title="Finalizar questionário"
-          onPress={() => submit()}
-          disabled={loading}
-          loading={loading}
-        />
-      </View>
     </>
   );
 };
