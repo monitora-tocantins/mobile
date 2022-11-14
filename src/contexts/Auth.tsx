@@ -58,6 +58,7 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     const dataStorageUser = await AsyncStorage.getItem(
       '@monitora_tocantins:user',
     );
+
     if (dataStorage && dataStorageUser) {
       setUser(JSON.parse(dataStorageUser));
       api.defaults.headers.common.Authorization = `Bearer ${JSON.parse(
@@ -91,6 +92,7 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
           '@monitora_tocantins:user',
           JSON.stringify(res.data.data),
         );
+
         setUser(res.data.data);
         setIsFetchingUser(false);
         resolve(true);

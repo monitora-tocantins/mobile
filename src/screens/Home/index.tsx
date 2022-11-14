@@ -22,7 +22,6 @@ import CardQuestions from './components/CardQuestions';
 import axios from 'axios';
 import { Avatar, Text, Title, useTheme } from 'react-native-paper';
 import { AppScreensProps } from '../../routes/app.routes';
-import { UserType } from '../../utils/constant';
 import { useAuth } from '../../hooks/useAuth';
 import { stringToColor } from '../../utils/mask';
 import { CardNews, INews } from '../../components/CardNews';
@@ -204,7 +203,7 @@ const Home: React.FC = () => {
               error={covidError}
               onRefresh={() => handleRefresh()}
             />
-            {user.type === UserType.CENSUS_TAKER ? (
+            {user.type === 1 ? (
               <CardQuestions
                 title="Censo 2022"
                 description="Aplique o questionário referente ao coronavírus na região"

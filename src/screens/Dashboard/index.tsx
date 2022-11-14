@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -15,7 +15,7 @@ import { CensusFormCard } from '../../components/CensusFormCard';
 import { useFormStorage } from '../../contexts/FormStorage';
 import { ptBR } from 'date-fns/locale';
 import { format } from 'date-fns';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { AppScreensProps } from '../../routes/app.routes';
 import { api } from '../../services/api';
 
@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
 
   const onSelectedFilter = (value: string) => setSelectedFilter(value);
 
-  const getFormsTotal = async () => {
+  const getFormsTotal = useCallback(async () => {
     try {
       setIsFetchingForms(true);
       const res = await api.get(`/user/forms?user_id=${user.id}&limit=99999`);
@@ -42,15 +42,12 @@ const Dashboard: React.FC = () => {
     } catch (error) {
       setIsFetchingForms(false);
     }
-  };
+  }, [user]);
 
-  useFocusEffect(() => {
+  useEffect(() => {
     getStorage();
-  });
-
-  useFocusEffect(() => {
     getFormsTotal();
-  });
+  }, [getStorage, getFormsTotal]);
 
   const filtered =
     selectedFilter === 'all'
