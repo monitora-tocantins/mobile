@@ -94,7 +94,7 @@ export const FormSummary: React.FC<Props> = ({
   reasonNotToTake,
   lostFamilyMember,
   affectedCovidAfterVaccinated,
-  rehabilitationSequelae,
+  // rehabilitationSequelae,
   treatmentRehabilitationSequelae,
   opinionPreventionMeasures,
   covidInformation,
@@ -387,7 +387,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}>Não informou</Text>
               </>
             )}
             <Text style={styles.text}>Confirmação do diagnostico:</Text>
@@ -404,7 +403,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}>Não informou diagnostico</Text>
               </>
             )}
             <Text style={styles.text}>
@@ -495,7 +493,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}> 1 Não informou</Text>
               </>
             ) : (
               <>
@@ -508,7 +505,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}> Não informou</Text>
               </>
             )}
             <Text style={styles.text}>
@@ -527,7 +523,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}>Não informou</Text>
               </>
             )}
 
@@ -547,7 +542,6 @@ export const FormSummary: React.FC<Props> = ({
                     disabled
                   />
                 )}
-                <Text style={styles.textNo}>Não informou</Text>
               </>
             )}
             <Text style={styles.text}>

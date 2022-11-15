@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 4,
   },
   iconContainer: {
     position: 'absolute',
