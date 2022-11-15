@@ -49,7 +49,7 @@ export const CensusSyncFormCard: React.FC<Props> = ({
           <View style={styles.progressWrapper}>
             <View style={styles.progressBarWrapper}>
               <ProgressBar
-                progress={progress ? progress / 100 : 0}
+                progress={progress !== undefined ? progress / 100 : 0}
                 color={
                   uploaded !== undefined && uploaded
                     ? '#00D488'
@@ -59,7 +59,9 @@ export const CensusSyncFormCard: React.FC<Props> = ({
                 }
               />
             </View>
-            <Text variant="bodyMedium">{`${progress}%` || '100%'}</Text>
+            <Text variant="bodyMedium">
+              {`${progress !== undefined ? progress / 100 : 0}%` || '100%'}
+            </Text>
           </View>
         </View>
       </View>

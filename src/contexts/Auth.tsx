@@ -64,6 +64,7 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
       api.defaults.headers.common.Authorization = `Bearer ${JSON.parse(
         dataStorage,
       )}`;
+      console.log('User', user);
       setIsAuthenticated(true);
       setMounted(false);
       setLoading(false);
@@ -98,7 +99,6 @@ const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
         resolve(true);
       } catch (error: any) {
         setIsFetchingUser(false);
-        console.log('Error =>', error);
         if (error.response) {
           reject(error.response.data.error.message);
         } else {

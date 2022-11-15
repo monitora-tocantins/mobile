@@ -45,7 +45,7 @@ const SyncForms: React.FC = () => {
           'Não saia ou feche o aplicativo enquanto os formulários são sincronizados',
         type: 'info',
         autoHide: true,
-        duration: 1000,
+        duration: 500,
         animated: true,
         position: 'top',
         floating: true,
@@ -159,17 +159,32 @@ const SyncForms: React.FC = () => {
           }
         }
       }
+      // showMessage({
+      //   message: 'IoT Imuniza - Censo 2022',
+      //   description: 'Os formulários foram sincronizados com sucesso',
+      //   type: 'success',
+      //   animated: true,
+      //   position: 'top',
+      //   floating: true,
+      // });
+      setIsSyncing(false);
+    } catch (error: any) {
+      setIsSyncing(false);
+      await new Promise(resolve => {
+        setTimeout(() => {
+          setCurrentSyncForm(null);
+          resolve(true);
+        }, 1000);
+      });
       showMessage({
-        message: 'IoT Imuniza - Censo 2022',
-        description: 'Os formulários foram sincronizados com sucesso',
-        type: 'success',
+        message: 'Erro ao sincronizar',
+        description: error.response.data.error.message,
+        type: 'danger',
         animated: true,
         position: 'top',
         floating: true,
       });
-      setIsSyncing(false);
-    } catch (error) {
-      setIsSyncing(false);
+      console.log('Resultado de sync', error.response.data.error.message);
     }
   };
 
