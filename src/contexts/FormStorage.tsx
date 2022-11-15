@@ -96,77 +96,29 @@ export const FormStorageProvider: React.FC<IFormStorageProvider> = ({
   const getStorage = useCallback(async () => {
     setLoading(true);
     const realm = await getRealm();
-    const data = realm
-      .objects<StorageSchemaType>('FormSchema')
-      .filtered('uid == $0', user.id)
-      .sorted('created_at');
-    if (data !== undefined) {
-      setStorage(data);
+
+    if (user.type === 1) {
+      const data = realm
+        .objects<StorageSchemaType>('FormSchema')
+        .filtered('uid == $0', user.id)
+        .sorted('created_at');
+      if (data !== undefined) {
+        setStorage(data);
+      }
+      setLoading(false);
+    } else if (user.type === 0) {
+      const data = realm
+        .objects<StorageSchemaType>('FormSchema')
+        .sorted('created_at');
+      if (data !== undefined) {
+        setStorage(data);
+      }
+      setLoading(false);
     }
-    setLoading(false);
     return () => {
       realm.close();
     };
   }, [user]);
-
-  const seedFormsToTest = async () => {
-    const result5 = await saveForm({
-      uid: user.id,
-      city: 'Cametá',
-      district: 'Castanhal',
-      email: '',
-      gender: 'Masculino',
-      latitude: '',
-      longitude: '',
-      name: 'Teste 12',
-      number: '',
-      status: 'pending',
-      street: 'São benedito',
-      uf: 'PA',
-      zipcode: '68400000',
-      zone: 'Urbana',
-      cpf: '98226748720',
-      reason_not_cpf: '',
-      region: '',
-      age_group: 'até 25 anos',
-      schollLevel: 'fundamental imcompleto',
-      religion: 'Católica',
-      comorbidity: false,
-      diabetes: false,
-      heartProblem: false,
-      kidneyDisease: false,
-      thyroid: false,
-      obesity: false,
-      otherComorbidity: '',
-      affectedCovid19: false,
-      diagnosticConfirmation: false,
-      timeInterval: '',
-      diagnosticMethod: '',
-      treatmentPlace: '',
-      hospitalTreatment: '',
-      covidSequelae: '',
-      vaccinated: true,
-      vaccineDoses: 'Dose única',
-      reasonNotToTake: '',
-      lostFamilyMember: false,
-      affectedCovidAfterVaccinated: false,
-      rehabilitationSequelae: false,
-      treatmentRehabilitationSequelae: '',
-      opinionPreventionMeasures: 'Necessário',
-      covidInformation: 'Veículo televisivo e rádio',
-      maintainedFamilyIncome: true,
-      receivedSocialAssistance: true,
-      recoveredFamilyIncome: false,
-      familyInDebt: false,
-      created_at: new Date(),
-      updated_at: new Date(),
-    });
-    console.log('Teste rodou => ', result5);
-  };
-
-  useEffect(() => {
-    // seedFormsToTest();
-  }, []);
 
   useEffect(() => {
     getStorage();

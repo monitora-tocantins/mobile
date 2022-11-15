@@ -790,18 +790,82 @@ const Form: React.FC = () => {
               created_at: formAlreadyExists.created_at,
               updated_at: new Date(),
             });
+            showMessage({
+              message: 'IoT Imuniza - Censo 2022',
+              description: 'O formulário foi atualizado com sucesso',
+              type: 'success',
+              animated: true,
+              position: 'top',
+              floating: true,
+            });
+            setIsSubmiting(false);
+            setIsFinish(true);
+            onOpen();
+          } else {
+            await saveForm({
+              uid: user.id,
+              name,
+              cpf,
+              email,
+              reason_not_cpf: reasonNotCpf,
+              age_group: ageGroup,
+              gender,
+              city,
+              street,
+              district,
+              number,
+              region,
+              zone,
+              uf,
+              zipcode,
+              latitude,
+              longitude,
+              schollLevel,
+              religion,
+              comorbidity,
+              diabetes,
+              heartProblem,
+              kidneyDisease,
+              thyroid,
+              obesity,
+              otherComorbidity,
+              affectedCovid19,
+              diagnosticConfirmation,
+              timeInterval,
+              diagnosticMethod,
+              treatmentPlace,
+              hospitalTreatment,
+              covidSequelae,
+              vaccinated,
+              vaccineDoses,
+              reasonNotToTake,
+              lostFamilyMember,
+              affectedCovidAfterVaccinated,
+              rehabilitationSequelae,
+              treatmentRehabilitationSequelae,
+              opinionPreventionMeasures,
+              covidInformation,
+              maintainedFamilyIncome,
+              receivedSocialAssistance,
+              recoveredFamilyIncome,
+              familyInDebt,
+              status: 'complete',
+              created_at: new Date(),
+              updated_at: new Date(),
+            });
+
+            showMessage({
+              message: 'IoT Imuniza - Censo 2022',
+              description: 'O formulário foi cadastrado com sucesso',
+              type: 'success',
+              animated: true,
+              position: 'top',
+              floating: true,
+            });
+            setIsSubmiting(false);
+            setIsFinish(true);
+            onOpen();
           }
-          showMessage({
-            message: 'IoT Imuniza - Censo 2022',
-            description: 'O formulário foi atualizado com sucesso',
-            type: 'success',
-            animated: true,
-            position: 'top',
-            floating: true,
-          });
-          setIsSubmiting(false);
-          setIsFinish(true);
-          onOpen();
         } else {
           await saveForm({
             uid: user.id,
@@ -1736,7 +1800,7 @@ const Form: React.FC = () => {
               }}>
               Voltar ao dashboard
             </Button>
-            <Button
+            {/* <Button
               mode="contained"
               onPress={() => {
                 setIsStarted(false);
@@ -1744,7 +1808,7 @@ const Form: React.FC = () => {
                 navigation.navigate('form');
               }}>
               Novo questionário
-            </Button>
+            </Button> */}
           </View>
         </View>
       </Modalize>
@@ -1846,7 +1910,7 @@ const styles = StyleSheet.create({
   buttons: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
   },
 

@@ -203,7 +203,7 @@ const Home: React.FC = () => {
               error={covidError}
               onRefresh={() => handleRefresh()}
             />
-            {user.type === 1 ? (
+            {user.type === 1 || user.type === 0 ? (
               <CardQuestions
                 title="Censo 2022"
                 description="Aplique o questionário referente ao coronavírus na região"
