@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
               <>
                 <ProgressBar indeterminate />
                 <Text variant="bodyLarge" style={styles.loaderTitle}>
-                  Carregando formulários offline
+                  Carregando formulários
                 </Text>
               </>
             ) : (
@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
             )}
             {filtered.length === 0 && (
               <Text style={styles.loaderTitle} variant="bodyLarge">
-                Nenhum formulário cadastrado offline
+                Nenhum formulário cadastrado
               </Text>
             )}
           </View>
